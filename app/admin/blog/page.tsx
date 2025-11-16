@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +17,12 @@ interface BlogPost {
   published: boolean;
 }
 
+interface NewsletterSubscriber {
+  email: string;
+  subscribedAt: string;
+  date: string;
+}
+
 const ADMIN_EMAIL = "Hassyku786@gmail.com";
 const ADMIN_PASSWORD = "Hassaan@786";
 
@@ -26,6 +32,7 @@ export default function BlogAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,6 +51,7 @@ export default function BlogAdmin() {
     if (auth === "authenticated" && authEmail === ADMIN_EMAIL) {
       setIsAuthenticated(true);
       loadBlogs();
+      loadSubscribers();
     } else {
       // Clear invalid session
       sessionStorage.removeItem("blogAdminAuth");
@@ -70,6 +78,40 @@ export default function BlogAdmin() {
     if (storedBlogs) {
       setBlogs(JSON.parse(storedBlogs));
     }
+  };
+
+  const loadSubscribers = () => {
+    const storedSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
+    if (storedSubscribers) {
+      const subs = JSON.parse(storedSubscribers);
+      // Sort by most recent first
+      subs.sort((a: NewsletterSubscriber, b: NewsletterSubscriber) => 
+        new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
+      );
+      setSubscribers(subs);
+    }
+  };
+
+  const exportSubscribers = () => {
+    if (subscribers.length === 0) {
+      alert("No subscribers to export.");
+      return;
+    }
+    
+    const csv = [
+      ["Email", "Subscribed Date", "Subscribed At"],
+      ...subscribers.map(sub => [sub.email, sub.date, sub.subscribedAt])
+    ].map(row => row.join(",")).join("\n");
+    
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `newsletter-subscribers-${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   const saveBlogs = (updatedBlogs: BlogPost[]) => {
@@ -355,6 +397,57 @@ export default function BlogAdmin() {
             </form>
           </div>
         )}
+
+        {/* Newsletter Subscribers */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Mail className="w-6 h-6 text-primary-600" />
+              <h2 className="text-2xl font-bold text-gray-900">Newsletter Subscribers ({subscribers.length})</h2>
+            </div>
+            {subscribers.length > 0 && (
+              <button
+                onClick={exportSubscribers}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-600 rounded-xl font-semibold hover:bg-primary-200 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Export CSV
+              </button>
+            )}
+          </div>
+          
+          {subscribers.length === 0 ? (
+            <div className="text-center py-12">
+              <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">No newsletter subscribers yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {subscribers.map((subscriber, index) => (
+                <div
+                  key={index}
+                  className="p-4 border-2 border-gray-200 rounded-xl hover:border-primary-300 transition-all bg-gray-50"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-4 h-4 text-primary-600" />
+                        <span className="font-semibold text-gray-900">{subscriber.email}</span>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1 ml-7">Subscribed on {subscriber.date}</p>
+                    </div>
+                    <a
+                      href={`mailto:${subscriber.email}`}
+                      className="px-3 py-1 bg-primary-100 text-primary-600 rounded-lg text-sm font-semibold hover:bg-primary-200 transition-colors"
+                    >
+                      Email
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Blog List */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">

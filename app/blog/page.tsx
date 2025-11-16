@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, ArrowRight, Clock, FileText } from "lucide-react";
+import { ArrowLeft, Calendar, User, ArrowRight, Clock, FileText, CheckCircle, X } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useState, useEffect } from "react";
 
@@ -22,6 +22,16 @@ export default function Blog() {
   const postsAnimation = useScrollAnimation({ threshold: 0.2 });
   const newsletterAnimation = useScrollAnimation({ threshold: 0.3 });
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  // Debug: Test popup (remove in production)
+  useEffect(() => {
+    // Uncomment the line below to test popup on page load
+    // setShowPopup(true);
+  }, []);
 
   useEffect(() => {
     // Load blogs from localStorage
@@ -34,7 +44,82 @@ export default function Blog() {
     }
   }, []);
 
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || isSubmitting) return;
+
+    const emailValue = email.toLowerCase().trim();
+    if (!emailValue) {
+      alert("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // Get existing subscribers
+      const existingSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
+      const subscribers = existingSubscribers ? JSON.parse(existingSubscribers) : [];
+      
+      // Check if email already exists
+      if (subscribers.some((sub: { email: string }) => sub.email.toLowerCase() === emailValue)) {
+        setIsSubmitting(false);
+        alert("This email is already subscribed!");
+        return;
+      }
+
+      // Add new subscriber
+      const newSubscriber = {
+        email: emailValue,
+        subscribedAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+      };
+
+      subscribers.push(newSubscriber);
+      localStorage.setItem("moneydesk_newsletter_subscribers", JSON.stringify(subscribers));
+
+      // Show popup immediately
+      setEmail("");
+      setSubscribed(true);
+      setShowPopup(true);
+      setIsSubmitting(false);
+      
+      console.log("✅ Subscription successful! Popup should appear now.", { showPopup: true });
+      
+      // Auto-close popup after 5 seconds
+      setTimeout(() => {
+        setShowPopup(false);
+        setSubscribed(false);
+      }, 5000);
+
+      // Send notification email to support@moneydesk.co (non-blocking)
+      fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSubscriber),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log("✅ Notification email sent to support@moneydesk.co");
+        } else {
+          console.error("⚠️ Failed to send notification email");
+        }
+      })
+      .catch(error => {
+        console.error("⚠️ Error sending notification email:", error);
+      });
+      
+    } catch (error) {
+      console.error("❌ Error subscribing:", error);
+      setIsSubmitting(false);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
+    <>
     <div className="pt-16 overflow-hidden">
       {/* Hero Section */}
       <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-br from-primary-50 via-white to-accent-50 overflow-hidden">
@@ -170,20 +255,101 @@ export default function Blog() {
             <p className="text-xl text-white/90 mb-8">
               Subscribe to our newsletter and get financial tips delivered to your inbox
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <form 
+              onSubmit={handleNewsletterSubmit}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+            >
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
+                required
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
               />
-              <button className="px-8 py-3 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all transform hover:scale-105">
-                Subscribe
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="px-8 py-3 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Subscribing..." : "Subscribe"}
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </section>
     </div>
+
+    {/* Success Popup Modal - Outside main container to avoid overflow issues */}
+    {showPopup && (
+      <div 
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(4px)',
+          animation: 'fadeIn 0.3s ease-out forwards',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+        onClick={() => {
+          setShowPopup(false);
+          setSubscribed(false);
+        }}
+      >
+        <div 
+          className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative mx-4"
+          style={{
+            animation: 'scaleIn 0.3s ease-out forwards',
+            transform: 'scale(1)',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="text-center">
+            {/* Success Icon */}
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+              <CheckCircle className="w-12 h-12 text-green-600" />
+            </div>
+            
+            {/* Title */}
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              Successfully Subscribed!
+            </h3>
+            
+            {/* Message */}
+            <p className="text-gray-600 mb-6">
+              Thank you for subscribing to our newsletter. You'll receive the latest financial tips and updates delivered to your inbox.
+            </p>
+            
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setShowPopup(false);
+                setSubscribed(false);
+              }}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              Got it!
+            </button>
+          </div>
+          
+          {/* Close X Button */}
+          <button
+            onClick={() => {
+              setShowPopup(false);
+              setSubscribed(false);
+            }}
+            className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
