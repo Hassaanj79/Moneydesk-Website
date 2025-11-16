@@ -1,0 +1,264 @@
+"use client";
+
+import { useState } from "react";
+import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight } from "lucide-react";
+
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    console.log("Form submitted:", formData);
+    setSubmitted(true);
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    }, 3000);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  return (
+    <div className="pt-16 overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-br from-primary-50/50 via-white to-secondary/5 overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="relative text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-100 to-primary-50 text-primary-600 rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-primary-200 shadow-lg">
+            <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></span>
+            We're here to help
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            Get in
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> touch</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          </p>
+        </div>
+
+        <div className="relative grid lg:grid-cols-2 gap-12">
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              Contact Information
+            </h2>
+            <div className="space-y-6">
+              <div className="group flex items-start p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all">
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-100 to-primary-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 group-hover:scale-110 transition-transform shadow-md">
+                  <Mail className="h-7 w-7 text-primary-500" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">Email</h3>
+                  <a
+                    href="mailto:support@moneydesk.co"
+                    className="text-primary-500 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    support@moneydesk.co
+                  </a>
+                </div>
+              </div>
+
+              <div className="group flex items-start p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 group-hover:scale-110 transition-transform shadow-md">
+                  <Phone className="h-7 w-7 text-secondary-dark" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">Phone</h3>
+                  <a
+                    href="tel:+1234567890"
+                    className="text-gray-600 hover:text-primary-500 font-medium transition-colors"
+                  >
+                    +1 (234) 567-890
+                  </a>
+                </div>
+              </div>
+
+              <div className="group flex items-start p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all">
+                <div className="w-14 h-14 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 group-hover:scale-110 transition-transform shadow-md">
+                  <MapPin className="h-7 w-7 text-success-dark" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">Address</h3>
+                  <p className="text-gray-600">
+                    123 Finance Street
+                    <br />
+                    San Francisco, CA 94105
+                    <br />
+                    United States
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 p-6 bg-gradient-to-br from-gray-50 to-primary-50/30 rounded-2xl border border-gray-200 shadow-lg">
+              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
+                Business Hours
+              </h3>
+              <p className="text-gray-700 mb-1 font-medium">Monday - Friday: 9:00 AM - 6:00 PM PST</p>
+              <p className="text-gray-600">Saturday - Sunday: Closed</p>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="relative">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200 shadow-xl">
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                Send us a Message
+              </h2>
+              {submitted ? (
+                <div className="bg-gradient-to-br from-success/20 to-success/10 border-2 border-success/40 rounded-2xl p-8 text-center animate-pulse">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-success/20 rounded-full mb-4">
+                    <CheckCircle className="h-10 w-10 text-success-dark" />
+                  </div>
+                  <h3 className="text-xl font-bold text-success-dark mb-2">
+                    Message Sent!
+                  </h3>
+                  <p className="text-success-dark/80">
+                    Thank you for contacting us. We'll get back to you soon.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-300"
+                      placeholder="Your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-300"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                      Subject
+                    </label>
+                    <select
+                      id="subject"
+                      name="subject"
+                      required
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-300"
+                    >
+                      <option value="">Select a subject</option>
+                      <option value="general">General Inquiry</option>
+                      <option value="support">Technical Support</option>
+                      <option value="billing">Billing Question</option>
+                      <option value="feature">Feature Request</option>
+                      <option value="partnership">Partnership</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      required
+                      rows={6}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-300 resize-none"
+                      placeholder="Tell us how we can help..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="group w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-4 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-2xl flex items-center justify-center transform hover:-translate-y-1"
+                  >
+                    Send Message
+                    <Send className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="mt-20">
+          <div className="relative bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-dark rounded-3xl p-12 md:p-16 text-center text-white shadow-2xl overflow-hidden">
+            <div className="relative z-10 max-w-3xl mx-auto">
+              <div className="inline-block px-4 py-2 bg-primary-400/30 backdrop-blur-sm rounded-full mb-6 border border-white/20">
+                <span className="text-white font-semibold text-sm">Get Started</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                Ready to experience these features?
+              </h2>
+              <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                Start your free trial today and see how MoneyDesk can transform your financial management.
+              </p>
+              <a
+                href="https://app.moneydesk.co/signup"
+                className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1"
+              >
+                Get Started Free
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+

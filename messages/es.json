@@ -1,0 +1,230 @@
+{
+  "nav": {
+    "features": "Características",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "signIn": "Iniciar sesión",
+    "getStarted": "Comenzar"
+  },
+  "home": {
+    "badge": "Nuevo: Información financiera impulsada por IA",
+    "title": "Toma el control de tus",
+    "titleHighlight": "finanzas",
+    "subtitle": "MoneyDesk te ayuda a rastrear gastos, administrar presupuestos, manejar préstamos y alcanzar tus metas financieras, todo en un solo lugar.",
+    "getStartedFree": "Comenzar gratis",
+    "viewPricing": "Ver precios",
+    "noCreditCard": "No se requiere tarjeta de crédito • Prueba gratuita de 14 días",
+    "featuresTitle": "Todo lo que necesitas para administrar tu dinero",
+    "featuresSubtitle": "Características poderosas diseñadas para ayudarte a mantenerte al tanto de tus finanzas",
+    "expenseTracking": {
+      "title": "Seguimiento de gastos",
+      "description": "Rastrea cada transacción con facilidad. Categoriza los gastos y ve a dónde va tu dinero."
+    },
+    "budgetManagement": {
+      "title": "Gestión de presupuesto",
+      "description": "Establece presupuestos para diferentes categorías y recibe alertas cuando te acerques a los límites."
+    },
+    "financialReports": {
+      "title": "Informes financieros",
+      "description": "Visualiza tus patrones de gasto con gráficos e información detallada."
+    },
+    "loanManagement": {
+      "title": "Gestión de préstamos",
+      "description": "Rastrea préstamos, calcula intereses y gestiona los pagos sin esfuerzo."
+    },
+    "goalTracking": {
+      "title": "Seguimiento de objetivos",
+      "description": "Establece metas de ahorro y rastrea tu progreso hacia hitos financieros."
+    },
+    "aiInsights": {
+      "title": "Información de IA",
+      "description": "Obtén consejos financieros personalizados impulsados por inteligencia artificial."
+    },
+    "ctaTitle": "¿Listo para tomar el control de tus finanzas?",
+    "ctaSubtitle": "Únete a miles de usuarios que ya están administrando mejor su dinero con MoneyDesk.",
+    "startFreeTrial": "Iniciar prueba gratuita"
+  },
+  "features": {
+    "badge": "Gestión financiera integral",
+    "title": "Características poderosas para",
+    "titleHighlight": "mejores finanzas",
+    "subtitle": "Todo lo que necesitas para tomar el control de tu dinero, todo en una plataforma intuitiva.",
+    "expenseManagement": "Gestión de gastos",
+    "budgetingPlanning": "Presupuesto y planificación",
+    "advancedFeatures": "Características avanzadas",
+    "transactionTracking": {
+      "title": "Seguimiento de transacciones",
+      "description": "Registra y categoriza todos tus ingresos y gastos con facilidad. Soporte para múltiples cuentas y monedas."
+    },
+    "recurringTransactions": {
+      "title": "Transacciones recurrentes",
+      "description": "Configura transacciones recurrentes automáticas para suscripciones, facturas e ingresos regulares."
+    },
+    "smartNotifications": {
+      "title": "Notificaciones inteligentes",
+      "description": "Recibe alertas para facturas próximas, límites de presupuesto e hitos financieros importantes."
+    },
+    "budgetCreation": {
+      "title": "Creación de presupuesto",
+      "description": "Crea presupuestos personalizados para diferentes categorías y períodos de tiempo. Rastrea tus gastos contra tus límites."
+    },
+    "spendingAnalysis": {
+      "title": "Análisis de gastos",
+      "description": "Analiza tus patrones de gasto con informes y visualizaciones detalladas para identificar áreas de mejora."
+    },
+    "financialReports": {
+      "title": "Informes financieros",
+      "description": "Genera informes completos sobre tus ingresos, gastos y salud financiera a lo largo del tiempo."
+    },
+    "loanManagement": {
+      "title": "Gestión de préstamos",
+      "description": "Rastrea préstamos, calcula intereses (fijos o porcentaje), gestiona cuotas y monitorea cronogramas de pago."
+    },
+    "savingsGoals": {
+      "title": "Metas de ahorro",
+      "description": "Establece y rastrea metas de ahorro con monitoreo automático de progreso y celebraciones de hitos."
+    },
+    "aiPoweredInsights": {
+      "title": "Información impulsada por IA",
+      "description": "Obtén consejos e información financiera personalizados impulsados por inteligencia artificial para optimizar tus finanzas."
+    },
+    "multiCurrencySupport": {
+      "title": "Soporte multi-moneda",
+      "description": "Administra finanzas en múltiples monedas con conversión automática y seguimiento de tipos de cambio."
+    },
+    "multiLanguageSupport": {
+      "title": "Soporte multiidioma",
+      "description": "Usa MoneyDesk en tu idioma preferido. Disponible en inglés, español, francés y alemán."
+    },
+    "ctaTitle": "¿Listo para experimentar estas características?",
+    "ctaSubtitle": "Comienza tu prueba gratuita hoy y descubre cómo MoneyDesk puede transformar tu gestión financiera.",
+    "getStartedFree": "Comenzar gratis"
+  },
+  "pricing": {
+    "badge": "Sin tarifas ocultas • Cancela en cualquier momento",
+    "title": "Precios simples y",
+    "titleHighlight": "transparentes",
+    "subtitle": "Elige el plan que mejor funcione para ti. Comienza gratis, actualiza en cualquier momento.",
+    "free": {
+      "name": "Gratis",
+      "price": "$0",
+      "period": "para siempre",
+      "description": "Perfecto para comenzar con la gestión de finanzas personales",
+      "cta": "Comenzar"
+    },
+    "premium": {
+      "name": "Premium",
+      "price": "$11.99",
+      "period": "por mes",
+      "description": "Todo lo que necesitas para una gestión financiera integral",
+      "cta": "Iniciar prueba gratuita",
+      "mostPopular": "Más popular"
+    },
+    "premiumAnnual": {
+      "name": "Premium Anual",
+      "price": "$115.10",
+      "period": "por año",
+      "originalPrice": "$143.88 por año",
+      "savings": "Ahorra 20%",
+      "description": "Mejor valor para planificación financiera a largo plazo"
+    },
+    "features": {
+      "upTo5Accounts": "Hasta 5 cuentas",
+      "basicExpenseTracking": "Seguimiento básico de gastos",
+      "simpleBudgetCreation": "Creación simple de presupuesto",
+      "transactionHistory": "Historial de transacciones",
+      "basicReports": "Informes básicos",
+      "mobileAppAccess": "Acceso a aplicación móvil",
+      "unlimitedAccounts": "Cuentas ilimitadas",
+      "advancedExpenseTracking": "Seguimiento avanzado de gastos",
+      "multipleBudgetsCategories": "Múltiples presupuestos y categorías",
+      "loanManagement": "Gestión de préstamos",
+      "savingsGoalsTracker": "Rastreador de metas de ahorro",
+      "aiPoweredInsights": "Información impulsada por IA",
+      "advancedReportsAnalytics": "Informes y análisis avanzados",
+      "recurringTransactions": "Transacciones recurrentes",
+      "multiCurrencySupport": "Soporte multi-moneda",
+      "prioritySupport": "Soporte prioritario",
+      "exportData": "Exportar datos (CSV, PDF)",
+      "customCategories": "Categorías personalizadas",
+      "everythingInPremium": "Todo en Premium",
+      "discount20": "20% de descuento",
+      "billedAnnually": "Facturado anualmente",
+      "cancelAnytime": "Cancela en cualquier momento"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "changePlans": {
+        "q": "¿Puedo cambiar de plan en cualquier momento?",
+        "a": "Sí, puedes actualizar o reducir tu plan en cualquier momento. Los cambios se reflejarán en tu próximo ciclo de facturación."
+      },
+      "paymentMethods": {
+        "q": "¿Qué métodos de pago aceptan?",
+        "a": "Aceptamos todas las principales tarjetas de crédito y débito. Todos los pagos se procesan de forma segura a través de Stripe."
+      },
+      "freeTrial": {
+        "q": "¿Hay una prueba gratuita?",
+        "a": "¡Sí! Todos los planes incluyen una prueba gratuita de 14 días. No se requiere tarjeta de crédito para comenzar."
+      },
+      "cancelAnytime": {
+        "q": "¿Puedo cancelar en cualquier momento?",
+        "a": "Absolutamente. Puedes cancelar tu suscripción en cualquier momento. Continuarás teniendo acceso hasta el final de tu período de facturación."
+      }
+    }
+  },
+  "contact": {
+    "badge": "Estamos aquí para ayudar",
+    "title": "Ponerse en",
+    "titleHighlight": "contacto",
+    "subtitle": "¿Tienes preguntas? Nos encantaría saber de ti. Envíanos un mensaje y te responderemos lo antes posible.",
+    "contactInformation": "Información de contacto",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "businessHours": "Horario comercial",
+    "businessHoursDetail": "Lunes - Viernes: 9:00 AM - 6:00 PM PST",
+    "businessHoursWeekend": "Sábado - Domingo: Cerrado",
+    "sendMessage": "Envíanos un mensaje",
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "tu.correo@ejemplo.com",
+      "subject": "Asunto",
+      "subjectPlaceholder": "Selecciona un asunto",
+      "message": "Mensaje",
+      "messagePlaceholder": "Cuéntanos cómo podemos ayudarte...",
+      "sendMessage": "Enviar mensaje",
+      "subjects": {
+        "general": "Consulta general",
+        "support": "Soporte técnico",
+        "billing": "Pregunta de facturación",
+        "feature": "Solicitud de característica",
+        "partnership": "Asociación"
+      }
+    },
+    "success": {
+      "title": "¡Mensaje enviado!",
+      "message": "Gracias por contactarnos. Te responderemos pronto."
+    }
+  },
+  "footer": {
+    "description": "Gestión de finanzas personales simplificada.",
+    "product": "Producto",
+    "company": "Empresa",
+    "resources": "Recursos",
+    "legal": "Legal",
+    "security": "Seguridad",
+    "about": "Acerca de",
+    "blog": "Blog",
+    "careers": "Carreras",
+    "documentation": "Documentación",
+    "support": "Soporte",
+    "api": "API",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "cookiePolicy": "Política de cookies",
+    "copyright": "© {year} MoneyDesk. Todos los derechos reservados."
+  }
+}
+

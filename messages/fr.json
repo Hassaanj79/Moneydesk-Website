@@ -1,0 +1,230 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "contact": "Contact",
+    "signIn": "Se connecter",
+    "getStarted": "Commencer"
+  },
+  "home": {
+    "badge": "Nouveau : Informations financières alimentées par l'IA",
+    "title": "Prenez le contrôle de vos",
+    "titleHighlight": "finances",
+    "subtitle": "MoneyDesk vous aide à suivre les dépenses, gérer les budgets, gérer les prêts et atteindre vos objectifs financiers, le tout en un seul endroit.",
+    "getStartedFree": "Commencer gratuitement",
+    "viewPricing": "Voir les tarifs",
+    "noCreditCard": "Aucune carte de crédit requise • Essai gratuit de 14 jours",
+    "featuresTitle": "Tout ce dont vous avez besoin pour gérer votre argent",
+    "featuresSubtitle": "Des fonctionnalités puissantes conçues pour vous aider à rester au top de vos finances",
+    "expenseTracking": {
+      "title": "Suivi des dépenses",
+      "description": "Suivez chaque transaction en toute simplicité. Catégorisez les dépenses et voyez où va votre argent."
+    },
+    "budgetManagement": {
+      "title": "Gestion du budget",
+      "description": "Définissez des budgets pour différentes catégories et recevez des alertes lorsque vous approchez des limites."
+    },
+    "financialReports": {
+      "title": "Rapports financiers",
+      "description": "Visualisez vos habitudes de dépenses avec des graphiques et des informations détaillées."
+    },
+    "loanManagement": {
+      "title": "Gestion des prêts",
+      "description": "Suivez les prêts, calculez les intérêts et gérez les remboursements sans effort."
+    },
+    "goalTracking": {
+      "title": "Suivi des objectifs",
+      "description": "Définissez des objectifs d'épargne et suivez vos progrès vers des jalons financiers."
+    },
+    "aiInsights": {
+      "title": "Informations IA",
+      "description": "Obtenez des conseils financiers personnalisés alimentés par l'intelligence artificielle."
+    },
+    "ctaTitle": "Prêt à prendre le contrôle de vos finances ?",
+    "ctaSubtitle": "Rejoignez des milliers d'utilisateurs qui gèrent déjà mieux leur argent avec MoneyDesk.",
+    "startFreeTrial": "Démarrer l'essai gratuit"
+  },
+  "features": {
+    "badge": "Gestion financière complète",
+    "title": "Fonctionnalités puissantes pour de",
+    "titleHighlight": "meilleures finances",
+    "subtitle": "Tout ce dont vous avez besoin pour prendre le contrôle de votre argent, le tout sur une plateforme intuitive.",
+    "expenseManagement": "Gestion des dépenses",
+    "budgetingPlanning": "Budget et planification",
+    "advancedFeatures": "Fonctionnalités avancées",
+    "transactionTracking": {
+      "title": "Suivi des transactions",
+      "description": "Enregistrez et catégorisez tous vos revenus et dépenses en toute simplicité. Prise en charge de plusieurs comptes et devises."
+    },
+    "recurringTransactions": {
+      "title": "Transactions récurrentes",
+      "description": "Configurez des transactions récurrentes automatiques pour les abonnements, les factures et les revenus réguliers."
+    },
+    "smartNotifications": {
+      "title": "Notifications intelligentes",
+      "description": "Recevez des alertes pour les factures à venir, les limites de budget et les jalons financiers importants."
+    },
+    "budgetCreation": {
+      "title": "Création de budget",
+      "description": "Créez des budgets personnalisés pour différentes catégories et périodes. Suivez vos dépenses par rapport à vos limites."
+    },
+    "spendingAnalysis": {
+      "title": "Analyse des dépenses",
+      "description": "Analysez vos habitudes de dépenses avec des rapports et visualisations détaillés pour identifier les domaines d'amélioration."
+    },
+    "financialReports": {
+      "title": "Rapports financiers",
+      "description": "Générez des rapports complets sur vos revenus, dépenses et santé financière au fil du temps."
+    },
+    "loanManagement": {
+      "title": "Gestion des prêts",
+      "description": "Suivez les prêts, calculez les intérêts (fixes ou pourcentage), gérez les versements et surveillez les calendriers de remboursement."
+    },
+    "savingsGoals": {
+      "title": "Objectifs d'épargne",
+      "description": "Définissez et suivez des objectifs d'épargne avec un suivi automatique des progrès et des célébrations de jalons."
+    },
+    "aiPoweredInsights": {
+      "title": "Informations alimentées par l'IA",
+      "description": "Obtenez des conseils et informations financiers personnalisés alimentés par l'intelligence artificielle pour optimiser vos finances."
+    },
+    "multiCurrencySupport": {
+      "title": "Prise en charge multi-devises",
+      "description": "Gérez les finances en plusieurs devises avec conversion automatique et suivi des taux de change."
+    },
+    "multiLanguageSupport": {
+      "title": "Prise en charge multilingue",
+      "description": "Utilisez MoneyDesk dans votre langue préférée. Disponible en anglais, espagnol, français et allemand."
+    },
+    "ctaTitle": "Prêt à découvrir ces fonctionnalités ?",
+    "ctaSubtitle": "Commencez votre essai gratuit aujourd'hui et découvrez comment MoneyDesk peut transformer votre gestion financière.",
+    "getStartedFree": "Commencer gratuitement"
+  },
+  "pricing": {
+    "badge": "Aucun frais caché • Annulez à tout moment",
+    "title": "Tarifs simples et",
+    "titleHighlight": "transparents",
+    "subtitle": "Choisissez le plan qui vous convient le mieux. Commencez gratuitement, mettez à niveau à tout moment.",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 €",
+      "period": "pour toujours",
+      "description": "Parfait pour commencer avec la gestion des finances personnelles",
+      "cta": "Commencer"
+    },
+    "premium": {
+      "name": "Premium",
+      "price": "11,99 €",
+      "period": "par mois",
+      "description": "Tout ce dont vous avez besoin pour une gestion financière complète",
+      "cta": "Démarrer l'essai gratuit",
+      "mostPopular": "Le plus populaire"
+    },
+    "premiumAnnual": {
+      "name": "Premium Annuel",
+      "price": "115,10 €",
+      "period": "par an",
+      "originalPrice": "143,88 € par an",
+      "savings": "Économisez 20%",
+      "description": "Meilleure valeur pour la planification financière à long terme"
+    },
+    "features": {
+      "upTo5Accounts": "Jusqu'à 5 comptes",
+      "basicExpenseTracking": "Suivi de base des dépenses",
+      "simpleBudgetCreation": "Création simple de budget",
+      "transactionHistory": "Historique des transactions",
+      "basicReports": "Rapports de base",
+      "mobileAppAccess": "Accès à l'application mobile",
+      "unlimitedAccounts": "Comptes illimités",
+      "advancedExpenseTracking": "Suivi avancé des dépenses",
+      "multipleBudgetsCategories": "Budgets et catégories multiples",
+      "loanManagement": "Gestion des prêts",
+      "savingsGoalsTracker": "Suivi des objectifs d'épargne",
+      "aiPoweredInsights": "Informations alimentées par l'IA",
+      "advancedReportsAnalytics": "Rapports et analyses avancés",
+      "recurringTransactions": "Transactions récurrentes",
+      "multiCurrencySupport": "Prise en charge multi-devises",
+      "prioritySupport": "Support prioritaire",
+      "exportData": "Exporter les données (CSV, PDF)",
+      "customCategories": "Catégories personnalisées",
+      "everythingInPremium": "Tout dans Premium",
+      "discount20": "20% de réduction",
+      "billedAnnually": "Facturé annuellement",
+      "cancelAnytime": "Annulez à tout moment"
+    },
+    "faq": {
+      "title": "Questions fréquemment posées",
+      "changePlans": {
+        "q": "Puis-je changer de plan à tout moment ?",
+        "a": "Oui, vous pouvez mettre à niveau ou réduire votre plan à tout moment. Les modifications seront reflétées dans votre prochain cycle de facturation."
+      },
+      "paymentMethods": {
+        "q": "Quels modes de paiement acceptez-vous ?",
+        "a": "Nous acceptons toutes les principales cartes de crédit et de débit. Tous les paiements sont traités en toute sécurité via Stripe."
+      },
+      "freeTrial": {
+        "q": "Y a-t-il un essai gratuit ?",
+        "a": "Oui ! Tous les plans incluent un essai gratuit de 14 jours. Aucune carte de crédit requise pour commencer."
+      },
+      "cancelAnytime": {
+        "q": "Puis-je annuler à tout moment ?",
+        "a": "Absolument. Vous pouvez annuler votre abonnement à tout moment. Vous continuerez à avoir accès jusqu'à la fin de votre période de facturation."
+      }
+    }
+  },
+  "contact": {
+    "badge": "Nous sommes là pour vous aider",
+    "title": "Entrer en",
+    "titleHighlight": "contact",
+    "subtitle": "Vous avez des questions ? Nous serions ravis d'avoir de vos nouvelles. Envoyez-nous un message et nous vous répondrons dans les plus brefs délais.",
+    "contactInformation": "Informations de contact",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "businessHours": "Heures d'ouverture",
+    "businessHoursDetail": "Lundi - Vendredi : 9h00 - 18h00 PST",
+    "businessHoursWeekend": "Samedi - Dimanche : Fermé",
+    "sendMessage": "Envoyez-nous un message",
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "email": "E-mail",
+      "emailPlaceholder": "votre.email@exemple.com",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Sélectionnez un sujet",
+      "message": "Message",
+      "messagePlaceholder": "Dites-nous comment nous pouvons vous aider...",
+      "sendMessage": "Envoyer le message",
+      "subjects": {
+        "general": "Demande générale",
+        "support": "Support technique",
+        "billing": "Question de facturation",
+        "feature": "Demande de fonctionnalité",
+        "partnership": "Partenariat"
+      }
+    },
+    "success": {
+      "title": "Message envoyé !",
+      "message": "Merci de nous avoir contactés. Nous vous répondrons bientôt."
+    }
+  },
+  "footer": {
+    "description": "Gestion des finances personnelles simplifiée.",
+    "product": "Produit",
+    "company": "Entreprise",
+    "resources": "Ressources",
+    "legal": "Légal",
+    "security": "Sécurité",
+    "about": "À propos",
+    "blog": "Blog",
+    "careers": "Carrières",
+    "documentation": "Documentation",
+    "support": "Support",
+    "api": "API",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "cookiePolicy": "Politique des cookies",
+    "copyright": "© {year} MoneyDesk. Tous droits réservés."
+  }
+}
+

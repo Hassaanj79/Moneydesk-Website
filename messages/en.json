@@ -1,0 +1,230 @@
+{
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "home": {
+    "badge": "New: AI-Powered Financial Insights",
+    "title": "Take control of your",
+    "titleHighlight": "finances",
+    "subtitle": "MoneyDesk helps you track expenses, manage budgets, handle loans, and achieve your financial goals—all in one place.",
+    "getStartedFree": "Get Started Free",
+    "viewPricing": "View Pricing",
+    "noCreditCard": "No credit card required • Free 14-day trial",
+    "featuresTitle": "Everything you need to manage your money",
+    "featuresSubtitle": "Powerful features designed to help you stay on top of your finances",
+    "expenseTracking": {
+      "title": "Expense Tracking",
+      "description": "Track every transaction with ease. Categorize expenses and see where your money goes."
+    },
+    "budgetManagement": {
+      "title": "Budget Management",
+      "description": "Set budgets for different categories and get alerts when you're approaching limits."
+    },
+    "financialReports": {
+      "title": "Financial Reports",
+      "description": "Visualize your spending patterns with detailed charts and insights."
+    },
+    "loanManagement": {
+      "title": "Loan Management",
+      "description": "Track loans, calculate interest, and manage repayments effortlessly."
+    },
+    "goalTracking": {
+      "title": "Goal Tracking",
+      "description": "Set savings goals and track your progress toward financial milestones."
+    },
+    "aiInsights": {
+      "title": "AI Insights",
+      "description": "Get personalized financial advice powered by artificial intelligence."
+    },
+    "ctaTitle": "Ready to take control of your finances?",
+    "ctaSubtitle": "Join thousands of users who are already managing their money better with MoneyDesk.",
+    "startFreeTrial": "Start Free Trial"
+  },
+  "features": {
+    "badge": "Comprehensive Financial Management",
+    "title": "Powerful features for",
+    "titleHighlight": "better finances",
+    "subtitle": "Everything you need to take control of your money, all in one intuitive platform.",
+    "expenseManagement": "Expense Management",
+    "budgetingPlanning": "Budgeting & Planning",
+    "advancedFeatures": "Advanced Features",
+    "transactionTracking": {
+      "title": "Transaction Tracking",
+      "description": "Record and categorize all your income and expenses with ease. Support for multiple accounts and currencies."
+    },
+    "recurringTransactions": {
+      "title": "Recurring Transactions",
+      "description": "Set up automatic recurring transactions for subscriptions, bills, and regular income."
+    },
+    "smartNotifications": {
+      "title": "Smart Notifications",
+      "description": "Get alerts for upcoming bills, budget limits, and important financial milestones."
+    },
+    "budgetCreation": {
+      "title": "Budget Creation",
+      "description": "Create custom budgets for different categories and time periods. Track your spending against your limits."
+    },
+    "spendingAnalysis": {
+      "title": "Spending Analysis",
+      "description": "Analyze your spending patterns with detailed reports and visualizations to identify areas for improvement."
+    },
+    "financialReports": {
+      "title": "Financial Reports",
+      "description": "Generate comprehensive reports on your income, expenses, and financial health over time."
+    },
+    "loanManagement": {
+      "title": "Loan Management",
+      "description": "Track loans, calculate interest (fixed or percentage), manage installments, and monitor repayment schedules."
+    },
+    "savingsGoals": {
+      "title": "Savings Goals",
+      "description": "Set and track savings goals with automatic progress monitoring and milestone celebrations."
+    },
+    "aiPoweredInsights": {
+      "title": "AI-Powered Insights",
+      "description": "Get personalized financial advice and insights powered by artificial intelligence to optimize your finances."
+    },
+    "multiCurrencySupport": {
+      "title": "Multi-Currency Support",
+      "description": "Manage finances in multiple currencies with automatic conversion and exchange rate tracking."
+    },
+    "multiLanguageSupport": {
+      "title": "Multi-language Support",
+      "description": "Use MoneyDesk in your preferred language. Available in English, Spanish, French, and German."
+    },
+    "ctaTitle": "Ready to experience these features?",
+    "ctaSubtitle": "Start your free trial today and see how MoneyDesk can transform your financial management.",
+    "getStartedFree": "Get Started Free"
+  },
+  "pricing": {
+    "badge": "No hidden fees • Cancel anytime",
+    "title": "Simple, transparent",
+    "titleHighlight": "pricing",
+    "subtitle": "Choose the plan that works best for you. Start free, upgrade anytime.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "forever",
+      "description": "Perfect for getting started with personal finance management",
+      "cta": "Get Started"
+    },
+    "premium": {
+      "name": "Premium",
+      "price": "$11.99",
+      "period": "per month",
+      "description": "Everything you need for comprehensive financial management",
+      "cta": "Start Free Trial",
+      "mostPopular": "Most Popular"
+    },
+    "premiumAnnual": {
+      "name": "Premium Annual",
+      "price": "$115.10",
+      "period": "per year",
+      "originalPrice": "$143.88 per year",
+      "savings": "Save 20%",
+      "description": "Best value for long-term financial planning"
+    },
+    "features": {
+      "upTo5Accounts": "Up to 5 accounts",
+      "basicExpenseTracking": "Basic expense tracking",
+      "simpleBudgetCreation": "Simple budget creation",
+      "transactionHistory": "Transaction history",
+      "basicReports": "Basic reports",
+      "mobileAppAccess": "Mobile app access",
+      "unlimitedAccounts": "Unlimited accounts",
+      "advancedExpenseTracking": "Advanced expense tracking",
+      "multipleBudgetsCategories": "Multiple budgets & categories",
+      "loanManagement": "Loan management",
+      "savingsGoalsTracker": "Savings goals tracker",
+      "aiPoweredInsights": "AI-powered insights",
+      "advancedReportsAnalytics": "Advanced reports & analytics",
+      "recurringTransactions": "Recurring transactions",
+      "multiCurrencySupport": "Multi-currency support",
+      "prioritySupport": "Priority support",
+      "exportData": "Export data (CSV, PDF)",
+      "customCategories": "Custom categories",
+      "everythingInPremium": "Everything in Premium",
+      "discount20": "20% discount",
+      "billedAnnually": "Billed annually",
+      "cancelAnytime": "Cancel anytime"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "changePlans": {
+        "q": "Can I change plans anytime?",
+        "a": "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle."
+      },
+      "paymentMethods": {
+        "q": "What payment methods do you accept?",
+        "a": "We accept all major credit cards and debit cards. All payments are processed securely through Stripe."
+      },
+      "freeTrial": {
+        "q": "Is there a free trial?",
+        "a": "Yes! All plans come with a 14-day free trial. No credit card required to start."
+      },
+      "cancelAnytime": {
+        "q": "Can I cancel anytime?",
+        "a": "Absolutely. You can cancel your subscription at any time. You'll continue to have access until the end of your billing period."
+      }
+    }
+  },
+  "contact": {
+    "badge": "We're here to help",
+    "title": "Get in",
+    "titleHighlight": "touch",
+    "subtitle": "Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
+    "contactInformation": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "businessHours": "Business Hours",
+    "businessHoursDetail": "Monday - Friday: 9:00 AM - 6:00 PM PST",
+    "businessHoursWeekend": "Saturday - Sunday: Closed",
+    "sendMessage": "Send us a Message",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "message": "Message",
+      "messagePlaceholder": "Tell us how we can help...",
+      "sendMessage": "Send Message",
+      "subjects": {
+        "general": "General Inquiry",
+        "support": "Technical Support",
+        "billing": "Billing Question",
+        "feature": "Feature Request",
+        "partnership": "Partnership"
+      }
+    },
+    "success": {
+      "title": "Message Sent!",
+      "message": "Thank you for contacting us. We'll get back to you soon."
+    }
+  },
+  "footer": {
+    "description": "Personal finance management made simple.",
+    "product": "Product",
+    "company": "Company",
+    "resources": "Resources",
+    "legal": "Legal",
+    "security": "Security",
+    "about": "About",
+    "blog": "Blog",
+    "careers": "Careers",
+    "documentation": "Documentation",
+    "support": "Support",
+    "api": "API",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookiePolicy": "Cookie Policy",
+    "copyright": "© {year} MoneyDesk. All rights reserved."
+  }
+}
+
