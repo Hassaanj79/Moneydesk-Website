@@ -12,15 +12,51 @@ export default function Contact() {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    
+    try {
+      // Save to localStorage for admin viewing
+      const submission = {
+        id: Date.now().toString(),
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        submittedAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+      };
+
+      const existingSubmissions = localStorage.getItem("moneydesk_contact_submissions");
+      const submissions = existingSubmissions ? JSON.parse(existingSubmissions) : [];
+      submissions.push(submission);
+      localStorage.setItem("moneydesk_contact_submissions", JSON.stringify(submissions));
+
+      // Send email notification to support@moneydesk.co
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("✅ Contact form submission sent successfully");
+      } else {
+        console.error("⚠️ Failed to send contact form submission");
+      }
+
+      setSubmitted(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 3000);
+      
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      console.error("❌ Error submitting contact form:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   const handleChange = (
@@ -85,10 +121,10 @@ export default function Contact() {
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">Phone</h3>
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+13022193149"
                     className="text-gray-600 hover:text-primary-500 font-medium transition-colors"
                   >
-                    +1 (234) 567-890
+                    +1 302 219 3149
                   </a>
                 </div>
               </div>
@@ -100,23 +136,12 @@ export default function Contact() {
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">Address</h3>
                   <p className="text-gray-600">
-                    123 Finance Street
+                    1111B S Governors Ave STE 26220
                     <br />
-                    San Francisco, CA 94105
-                    <br />
-                    United States
+                    Dover, DE 19904
                   </p>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-12 p-6 bg-gradient-to-br from-gray-50 to-primary-50/30 rounded-2xl border border-gray-200 shadow-lg">
-              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                Business Hours
-              </h3>
-              <p className="text-gray-700 mb-1 font-medium">Monday - Friday: 9:00 AM - 6:00 PM PST</p>
-              <p className="text-gray-600">Saturday - Sunday: Closed</p>
             </div>
           </div>
 

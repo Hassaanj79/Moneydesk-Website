@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +23,16 @@ interface NewsletterSubscriber {
   date: string;
 }
 
+interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  submittedAt: string;
+  date: string;
+}
+
 const ADMIN_EMAIL = "Hassyku786@gmail.com";
 const ADMIN_PASSWORD = "Hassaan@786";
 
@@ -33,6 +43,7 @@ export default function BlogAdmin() {
   const [password, setPassword] = useState("");
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
+  const [contactSubmissions, setContactSubmissions] = useState<ContactSubmission[]>([]);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [formData, setFormData] = useState({
@@ -52,6 +63,7 @@ export default function BlogAdmin() {
       setIsAuthenticated(true);
       loadBlogs();
       loadSubscribers();
+      loadContactSubmissions();
     } else {
       // Clear invalid session
       sessionStorage.removeItem("blogAdminAuth");
@@ -67,6 +79,8 @@ export default function BlogAdmin() {
       sessionStorage.setItem("blogAdminEmail", ADMIN_EMAIL);
       setIsAuthenticated(true);
       loadBlogs();
+      loadSubscribers();
+      loadContactSubmissions();
     } else {
       alert("Invalid email or password. Access denied.");
       setPassword("");
@@ -90,6 +104,47 @@ export default function BlogAdmin() {
       );
       setSubscribers(subs);
     }
+  };
+
+  const loadContactSubmissions = () => {
+    const storedSubmissions = localStorage.getItem("moneydesk_contact_submissions");
+    if (storedSubmissions) {
+      const subs = JSON.parse(storedSubmissions);
+      // Sort by most recent first
+      subs.sort((a: ContactSubmission, b: ContactSubmission) => 
+        new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+      );
+      setContactSubmissions(subs);
+    }
+  };
+
+  const exportContactSubmissions = () => {
+    if (contactSubmissions.length === 0) {
+      alert("No contact submissions to export.");
+      return;
+    }
+    
+    const csv = [
+      ["Name", "Email", "Subject", "Message", "Submitted Date", "Submitted At"],
+      ...contactSubmissions.map(sub => [
+        sub.name,
+        sub.email,
+        sub.subject,
+        sub.message.replace(/"/g, '""'), // Escape quotes in CSV
+        sub.date,
+        sub.submittedAt
+      ])
+    ].map(row => row.map(field => `"${field}"`).join(",")).join("\n");
+    
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `contact-submissions-${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   const exportSubscribers = () => {
@@ -448,6 +503,73 @@ export default function BlogAdmin() {
                     >
                       Email
                     </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Contact Form Submissions */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-6 h-6 text-primary-600" />
+              <h2 className="text-2xl font-bold text-gray-900">Contact Form Submissions ({contactSubmissions.length})</h2>
+            </div>
+            {contactSubmissions.length > 0 && (
+              <button
+                onClick={exportContactSubmissions}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-600 rounded-xl font-semibold hover:bg-primary-200 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Export CSV
+              </button>
+            )}
+          </div>
+          
+          {contactSubmissions.length === 0 ? (
+            <div className="text-center py-12">
+              <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">No contact form submissions yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {contactSubmissions.map((submission) => (
+                <div
+                  key={submission.id}
+                  className="p-4 border-2 border-gray-200 rounded-xl hover:border-primary-300 transition-all bg-gray-50"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <MessageSquare className="w-4 h-4 text-primary-600" />
+                        <span className="font-bold text-gray-900">{submission.name}</span>
+                        <span className="text-sm text-gray-500">({submission.email})</span>
+                      </div>
+                      <div className="mb-2">
+                        <span className="text-sm font-semibold text-gray-700">Subject: </span>
+                        <span className="text-sm text-gray-900">{submission.subject}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">{submission.message}</p>
+                      <p className="text-xs text-gray-500">Submitted on {submission.date}</p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <a
+                        href={`mailto:${submission.email}?subject=Re: ${submission.subject}`}
+                        className="px-3 py-1 bg-primary-100 text-primary-600 rounded-lg text-sm font-semibold hover:bg-primary-200 transition-colors text-center"
+                      >
+                        Reply
+                      </a>
+                      <details className="cursor-pointer">
+                        <summary className="text-xs text-primary-600 hover:text-primary-700 font-medium px-2 py-1">
+                          View Full
+                        </summary>
+                        <div className="mt-2 p-3 bg-white rounded-lg border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap max-w-md">
+                          {submission.message}
+                        </div>
+                      </details>
+                    </div>
                   </div>
                 </div>
               ))}
