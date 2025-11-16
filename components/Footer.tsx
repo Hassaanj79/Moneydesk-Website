@@ -7,7 +7,7 @@ export function Footer() {
     product: [
       { label: "Features", href: "/features" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Security", href: "#" },
+      { label: "Security", href: "/security" },
     ],
     company: [
       { label: "About", href: "#" },

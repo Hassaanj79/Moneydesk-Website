@@ -9,6 +9,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
+    { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
     { href: "/pricing", label: "Pricing" },
     { href: "/contact", label: "Contact" },
@@ -32,8 +33,8 @@ export function Header() {
             <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">MoneyDesk</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex items-center space-x-6 absolute left-1/2 transform -translate-x-1/2">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -44,6 +45,10 @@ export function Header() {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
+          </div>
+
+          {/* Right Side Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
             <Link
               href="https://app.moneydesk.co/login"
               className="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-all font-medium shadow-sm hover:shadow-lg transform hover:-translate-y-0.5"
