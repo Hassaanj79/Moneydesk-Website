@@ -1,14 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, MapPin, Clock, Briefcase, Users, Zap, Heart, TrendingUp } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Briefcase, Users, Zap, Heart, TrendingUp, MapPin, FileText } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useState, useEffect } from "react";
+
+interface JobPosition {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  description: string;
+  requirements?: string;
+  published: boolean;
+}
 
 export default function Careers() {
   const heroAnimation = useScrollAnimation({ threshold: 0.2 });
   const benefitsSectionAnimation = useScrollAnimation({ threshold: 0.2 });
   const jobsAnimation = useScrollAnimation({ threshold: 0.2 });
   const ctaAnimation = useScrollAnimation({ threshold: 0.3 });
+  const [openPositions, setOpenPositions] = useState<JobPosition[]>([]);
+
+  useEffect(() => {
+    // Load positions from localStorage
+    const storedPositions = localStorage.getItem("moneydesk_job_positions");
+    if (storedPositions) {
+      const positions = JSON.parse(storedPositions);
+      // Only show published positions
+      const publishedPositions = positions.filter((job: JobPosition) => job.published);
+      setOpenPositions(publishedPositions);
+    }
+  }, []);
 
   const benefits = [
     {
@@ -40,41 +64,6 @@ export default function Careers() {
       icon: Briefcase,
       title: "Learning Budget",
       description: "Annual budget for conferences, courses, and professional development.",
-    },
-  ];
-
-  const openPositions = [
-    {
-      id: 1,
-      title: "Senior Full-Stack Developer",
-      department: "Engineering",
-      location: "Remote / San Francisco",
-      type: "Full-time",
-      description: "We're looking for an experienced full-stack developer to help build and scale our financial management platform.",
-    },
-    {
-      id: 2,
-      title: "Product Designer",
-      department: "Design",
-      location: "Remote / San Francisco",
-      type: "Full-time",
-      description: "Join our design team to create beautiful, intuitive user experiences for our financial management tools.",
-    },
-    {
-      id: 3,
-      title: "Marketing Manager",
-      department: "Marketing",
-      location: "Remote / San Francisco",
-      type: "Full-time",
-      description: "Lead our marketing efforts to grow our user base and increase brand awareness.",
-    },
-    {
-      id: 4,
-      title: "Customer Success Specialist",
-      department: "Support",
-      location: "Remote",
-      type: "Full-time",
-      description: "Help our users succeed with MoneyDesk by providing exceptional support and guidance.",
     },
   ];
 
@@ -168,71 +157,84 @@ export default function Careers() {
             Open Positions
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore our current job openings and find the perfect role for you
+            {openPositions.length === 0 
+              ? "We don't have any positions available at the moment. Check back soon!"
+              : "Explore our current job openings and find the perfect role for you"
+            }
           </p>
         </div>
 
-        <div className="space-y-6">
-          {openPositions.map((job, index) => (
-            <div
-              key={job.id}
-              className={`group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-primary-300 transform hover:-translate-y-1 ${
-                jobsAnimation.isVisible 
-                  ? 'opacity-100 translate-y-0 scale-100' 
-                  : 'opacity-0 translate-y-8 scale-95'
-              }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
+        {openPositions.length === 0 ? (
+          <div className={`text-center py-20 transition-all duration-1000 ease-out ${
+            jobsAnimation.isVisible 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-10'
+          }`}>
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-100 rounded-full mb-6">
+              <Briefcase className="w-10 h-10 text-primary-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">No Open Positions</h3>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              We don't have any positions available at the moment. Check back soon for new opportunities!
+            </p>
+            <Link
+              href="mailto:support@moneydesk.co?subject=General Application"
+              className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold underline"
             >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-2xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                      {job.title}
-                    </h3>
-                    <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-semibold">
-                      {job.department}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 mb-4 leading-relaxed">
-                    {job.description}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{job.location}</span>
+              Send us your resume anyway
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {openPositions.map((job, index) => (
+              <div
+                key={job.id}
+                className={`group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-primary-300 transform hover:-translate-y-1 ${
+                  jobsAnimation.isVisible 
+                    ? 'opacity-100 translate-y-0 scale-100' 
+                    : 'opacity-0 translate-y-8 scale-95'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <h3 className="text-2xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
+                        {job.title}
+                      </h3>
+                      <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-semibold">
+                        {job.department}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{job.type}</span>
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      {job.description}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        <span>{job.location}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{job.type}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="md:ml-6">
-                  <Link
-                    href={`/careers/${job.id}`}
-                    className="group/btn inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-                  >
-                    Apply Now
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Link>
+                  <div className="md:ml-6">
+                    <Link
+                      href={`/careers/apply/${job.id}`}
+                      className="group/btn inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                      Apply Now
+                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* No Open Positions Message */}
-        <div className="text-center mt-16 p-8 bg-gray-50 rounded-2xl">
-          <p className="text-gray-600 mb-4">
-            Don't see a position that matches your skills?
-          </p>
-          <Link
-            href="mailto:support@moneydesk.co?subject=General Application"
-            className="text-primary-600 hover:text-primary-700 font-semibold underline"
-          >
-            Send us your resume anyway
-          </Link>
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* CTA Section */}

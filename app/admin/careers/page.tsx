@@ -1,46 +1,51 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, X, Briefcase, Download } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-interface BlogPost {
+interface JobPosition {
   id: string;
   title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  date: string;
-  readTime: string;
-  category: string;
+  department: string;
+  location: string;
+  type: string;
+  description: string;
+  requirements?: string;
   published: boolean;
 }
 
-interface NewsletterSubscriber {
-  email: string;
-  subscribedAt: string;
+interface JobApplication {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  applicantName: string;
+  applicantEmail: string;
+  applicantPhone?: string;
+  coverLetter: string;
+  resume?: string;
+  appliedAt: string;
   date: string;
 }
 
 const ADMIN_EMAIL = "Hassyku786@gmail.com";
 const ADMIN_PASSWORD = "Hassaan@786";
 
-export default function BlogAdmin() {
-  const router = useRouter();
+export default function CareersAdmin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
-  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
-  const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
+  const [positions, setPositions] = useState<JobPosition[]>([]);
+  const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [editingPosition, setEditingPosition] = useState<JobPosition | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    excerpt: "",
-    content: "",
-    author: "",
-    category: "",
+    department: "",
+    location: "",
+    type: "",
+    description: "",
+    requirements: "",
     published: false,
   });
 
@@ -50,10 +55,9 @@ export default function BlogAdmin() {
     const authEmail = sessionStorage.getItem("blogAdminEmail");
     if (auth === "authenticated" && authEmail === ADMIN_EMAIL) {
       setIsAuthenticated(true);
-      loadBlogs();
-      loadSubscribers();
+      loadPositions();
+      loadApplications();
     } else {
-      // Clear invalid session
       sessionStorage.removeItem("blogAdminAuth");
       sessionStorage.removeItem("blogAdminEmail");
     }
@@ -61,133 +65,134 @@ export default function BlogAdmin() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Verify email and password
     if (email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
       sessionStorage.setItem("blogAdminAuth", "authenticated");
       sessionStorage.setItem("blogAdminEmail", ADMIN_EMAIL);
       setIsAuthenticated(true);
-      loadBlogs();
+      loadPositions();
+      loadApplications();
     } else {
       alert("Invalid email or password. Access denied.");
       setPassword("");
     }
   };
 
-  const loadBlogs = () => {
-    const storedBlogs = localStorage.getItem("moneydesk_blogs");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
+  const loadPositions = () => {
+    const storedPositions = localStorage.getItem("moneydesk_job_positions");
+    if (storedPositions) {
+      setPositions(JSON.parse(storedPositions));
     }
   };
 
-  const loadSubscribers = () => {
-    const storedSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
-    if (storedSubscribers) {
-      const subs = JSON.parse(storedSubscribers);
-      // Sort by most recent first
-      subs.sort((a: NewsletterSubscriber, b: NewsletterSubscriber) => 
-        new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
+  const loadApplications = () => {
+    const storedApplications = localStorage.getItem("moneydesk_job_applications");
+    if (storedApplications) {
+      const apps = JSON.parse(storedApplications);
+      apps.sort((a: JobApplication, b: JobApplication) => 
+        new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()
       );
-      setSubscribers(subs);
+      setApplications(apps);
     }
   };
 
-  const exportSubscribers = () => {
-    if (subscribers.length === 0) {
-      alert("No subscribers to export.");
+  const savePositions = (updatedPositions: JobPosition[]) => {
+    localStorage.setItem("moneydesk_job_positions", JSON.stringify(updatedPositions));
+    setPositions(updatedPositions);
+  };
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const position: JobPosition = {
+      id: editingPosition?.id || Date.now().toString(),
+      title: formData.title,
+      department: formData.department,
+      location: formData.location,
+      type: formData.type,
+      description: formData.description,
+      requirements: formData.requirements,
+      published: formData.published,
+    };
+
+    let updatedPositions;
+    if (editingPosition) {
+      updatedPositions = positions.map((p) => (p.id === editingPosition.id ? position : p));
+    } else {
+      updatedPositions = [...positions, position];
+    }
+
+    savePositions(updatedPositions);
+    resetForm();
+    alert("Job position saved successfully!");
+  };
+
+  const handleEdit = (position: JobPosition) => {
+    setEditingPosition(position);
+    setFormData({
+      title: position.title,
+      department: position.department,
+      location: position.location,
+      type: position.type,
+      description: position.description,
+      requirements: position.requirements || "",
+      published: position.published,
+    });
+    setShowEditor(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this job position?")) {
+      const updatedPositions = positions.filter((p) => p.id !== id);
+      savePositions(updatedPositions);
+    }
+  };
+
+  const resetForm = () => {
+    setEditingPosition(null);
+    setShowEditor(false);
+    setFormData({
+      title: "",
+      department: "",
+      location: "",
+      type: "",
+      description: "",
+      requirements: "",
+      published: false,
+    });
+  };
+
+  const handleNewPosition = () => {
+    resetForm();
+    setShowEditor(true);
+  };
+
+  const exportApplications = () => {
+    if (applications.length === 0) {
+      alert("No applications to export.");
       return;
     }
     
     const csv = [
-      ["Email", "Subscribed Date", "Subscribed At"],
-      ...subscribers.map(sub => [sub.email, sub.date, sub.subscribedAt])
+      ["Job Title", "Applicant Name", "Email", "Phone", "Applied Date", "Cover Letter"],
+      ...applications.map(app => [
+        app.jobTitle,
+        app.applicantName,
+        app.applicantEmail,
+        app.applicantPhone || "",
+        app.date,
+        app.coverLetter.replace(/,/g, ";").replace(/\n/g, " ")
+      ])
     ].map(row => row.join(",")).join("\n");
     
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `newsletter-subscribers-${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `job-applications-${new Date().toISOString().split("T")[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-  };
-
-  const saveBlogs = (updatedBlogs: BlogPost[]) => {
-    localStorage.setItem("moneydesk_blogs", JSON.stringify(updatedBlogs));
-    setBlogs(updatedBlogs);
-  };
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const blogPost: BlogPost = {
-      id: editingBlog?.id || Date.now().toString(),
-      title: formData.title,
-      excerpt: formData.excerpt,
-      content: formData.content,
-      author: formData.author,
-      date: editingBlog?.date || new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-      readTime: calculateReadTime(formData.content),
-      category: formData.category,
-      published: formData.published,
-    };
-
-    let updatedBlogs;
-    if (editingBlog) {
-      updatedBlogs = blogs.map((b) => (b.id === editingBlog.id ? blogPost : b));
-    } else {
-      updatedBlogs = [...blogs, blogPost];
-    }
-
-    saveBlogs(updatedBlogs);
-    resetForm();
-    alert("Blog saved successfully!");
-  };
-
-  const calculateReadTime = (content: string): string => {
-    const words = content.split(/\s+/).length;
-    const minutes = Math.ceil(words / 200);
-    return `${minutes} min read`;
-  };
-
-  const handleEdit = (blog: BlogPost) => {
-    setEditingBlog(blog);
-    setFormData({
-      title: blog.title,
-      excerpt: blog.excerpt,
-      content: blog.content,
-      author: blog.author,
-      category: blog.category,
-      published: blog.published,
-    });
-    setShowEditor(true);
-  };
-
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this blog post?")) {
-      const updatedBlogs = blogs.filter((b) => b.id !== id);
-      saveBlogs(updatedBlogs);
-    }
-  };
-
-  const resetForm = () => {
-    setEditingBlog(null);
-    setShowEditor(false);
-    setFormData({
-      title: "",
-      excerpt: "",
-      content: "",
-      author: "",
-      category: "",
-      published: false,
-    });
-  };
-
-  const handleNewBlog = () => {
-    resetForm();
-    setShowEditor(true);
   };
 
   if (!isAuthenticated) {
@@ -195,7 +200,7 @@ export default function BlogAdmin() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Blog Admin Portal</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Careers Admin Portal</h1>
             <p className="text-gray-600">Authorized access only</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
@@ -253,7 +258,7 @@ export default function BlogAdmin() {
               Back to Website
             </Link>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Blog Admin Portal</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Careers Admin Portal</h1>
               <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-xs font-semibold">
                 {ADMIN_EMAIL}
               </span>
@@ -261,10 +266,10 @@ export default function BlogAdmin() {
           </div>
           <div className="flex items-center gap-4">
             <Link
-              href="/admin/careers"
+              href="/admin/blog"
               className="px-4 py-2 bg-primary-100 text-primary-600 rounded-xl font-semibold hover:bg-primary-200 transition-all"
             >
-              Manage Careers
+              Manage Blog
             </Link>
             <button
               onClick={() => {
@@ -277,11 +282,11 @@ export default function BlogAdmin() {
               Logout
             </button>
             <button
-              onClick={handleNewBlog}
+              onClick={handleNewPosition}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl"
             >
               <Plus className="w-5 h-5" />
-              New Blog Post
+              New Job Position
             </button>
           </div>
         </div>
@@ -291,7 +296,7 @@ export default function BlogAdmin() {
           <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">
-                {editingBlog ? "Edit Blog Post" : "Create New Blog Post"}
+                {editingPosition ? "Edit Job Position" : "Create New Job Position"}
               </h2>
               <button
                 onClick={resetForm}
@@ -305,7 +310,7 @@ export default function BlogAdmin() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Title *
+                    Job Title *
                   </label>
                   <input
                     type="text"
@@ -317,71 +322,85 @@ export default function BlogAdmin() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Category *
+                    Department *
                   </label>
                   <input
                     type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    value={formData.department}
+                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="e.g., Budgeting, Loans, Savings"
+                    placeholder="e.g., Engineering, Design, Marketing"
                     required
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Excerpt *
-                </label>
-                <textarea
-                  value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  rows={3}
-                  placeholder="Brief description of the blog post"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Content *
-                </label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm"
-                  rows={15}
-                  placeholder="Write your blog content here..."
-                  required
-                />
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Author Name *
+                    Location *
                   </label>
                   <input
                     type="text"
-                    value={formData.author}
-                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., Remote, San Francisco, New York"
                     required
                   />
                 </div>
-                <div className="flex items-center">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.published}
-                      onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                      className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
-                    />
-                    <span className="text-sm font-semibold text-gray-700">Publish immediately</span>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Job Type *
                   </label>
+                  <input
+                    type="text"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., Full-time, Part-time, Contract"
+                    required
+                  />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  rows={4}
+                  placeholder="Describe the role and responsibilities..."
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Requirements (Optional)
+                </label>
+                <textarea
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  rows={4}
+                  placeholder="List the requirements and qualifications..."
+                />
+              </div>
+
+              <div className="flex items-center">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.published}
+                    onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                    className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
+                  />
+                  <span className="text-sm font-semibold text-gray-700">Publish immediately</span>
+                </label>
               </div>
 
               <div className="flex gap-4">
@@ -390,7 +409,7 @@ export default function BlogAdmin() {
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl"
                 >
                   <Save className="w-5 h-5" />
-                  {editingBlog ? "Update Blog" : "Save Blog"}
+                  {editingPosition ? "Update Position" : "Save Position"}
                 </button>
                 <button
                   type="button"
@@ -404,16 +423,16 @@ export default function BlogAdmin() {
           </div>
         )}
 
-        {/* Newsletter Subscribers */}
+        {/* Job Applications */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <Mail className="w-6 h-6 text-primary-600" />
-              <h2 className="text-2xl font-bold text-gray-900">Newsletter Subscribers ({subscribers.length})</h2>
+              <Briefcase className="w-6 h-6 text-primary-600" />
+              <h2 className="text-2xl font-bold text-gray-900">Job Applications ({applications.length})</h2>
             </div>
-            {subscribers.length > 0 && (
+            {applications.length > 0 && (
               <button
-                onClick={exportSubscribers}
+                onClick={exportApplications}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-600 rounded-xl font-semibold hover:bg-primary-200 transition-all"
               >
                 <Download className="w-4 h-4" />
@@ -422,28 +441,35 @@ export default function BlogAdmin() {
             )}
           </div>
           
-          {subscribers.length === 0 ? (
+          {applications.length === 0 ? (
             <div className="text-center py-12">
-              <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">No newsletter subscribers yet.</p>
+              <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">No job applications yet.</p>
             </div>
           ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {subscribers.map((subscriber, index) => (
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {applications.map((app, index) => (
                 <div
                   key={index}
-                  className="p-4 border-2 border-gray-200 rounded-xl hover:border-primary-300 transition-all bg-gray-50"
+                  className="p-6 border-2 border-gray-200 rounded-xl hover:border-primary-300 transition-all bg-gray-50"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-primary-600" />
-                        <span className="font-semibold text-gray-900">{subscriber.email}</span>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-bold text-gray-900">{app.applicantName}</h3>
+                        <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-xs font-semibold">
+                          {app.jobTitle}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-500 mt-1 ml-7">Subscribed on {subscriber.date}</p>
+                      <div className="space-y-1 text-sm text-gray-600 mb-3">
+                        <p><strong>Email:</strong> {app.applicantEmail}</p>
+                        {app.applicantPhone && <p><strong>Phone:</strong> {app.applicantPhone}</p>}
+                        <p><strong>Applied:</strong> {app.date}</p>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2">{app.coverLetter}</p>
                     </div>
                     <a
-                      href={`mailto:${subscriber.email}`}
+                      href={`mailto:${app.applicantEmail}`}
                       className="px-3 py-1 bg-primary-100 text-primary-600 rounded-lg text-sm font-semibold hover:bg-primary-200 transition-colors"
                     >
                       Email
@@ -455,62 +481,60 @@ export default function BlogAdmin() {
           )}
         </div>
 
-        {/* Blog List */}
+        {/* Positions List */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">All Blog Posts ({blogs.length})</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">All Job Positions ({positions.length})</h2>
           
-          {blogs.length === 0 ? (
+          {positions.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No blog posts yet. Create your first blog post!</p>
+              <p className="text-gray-500 mb-4">No job positions yet. Create your first position!</p>
               <button
-                onClick={handleNewBlog}
+                onClick={handleNewPosition}
                 className="inline-flex items-center gap-2 bg-primary-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-600 transition-all"
               >
                 <Plus className="w-5 h-5" />
-                Create First Blog
+                Create First Position
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              {blogs.map((blog) => (
+              {positions.map((position) => (
                 <div
-                  key={blog.id}
+                  key={position.id}
                   className="p-6 border-2 border-gray-200 rounded-xl hover:border-primary-300 transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-bold text-gray-900">{blog.title}</h3>
+                        <h3 className="text-xl font-bold text-gray-900">{position.title}</h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          blog.published 
+                          position.published 
                             ? 'bg-success/20 text-success-dark' 
                             : 'bg-gray-200 text-gray-600'
                         }`}>
-                          {blog.published ? "Published" : "Draft"}
+                          {position.published ? "Published" : "Draft"}
                         </span>
                         <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-xs font-semibold">
-                          {blog.category}
+                          {position.department}
                         </span>
                       </div>
-                      <p className="text-gray-600 mb-2">{blog.excerpt}</p>
+                      <p className="text-gray-600 mb-2">{position.description}</p>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>By {blog.author}</span>
+                        <span>{position.location}</span>
                         <span>•</span>
-                        <span>{blog.date}</span>
-                        <span>•</span>
-                        <span>{blog.readTime}</span>
+                        <span>{position.type}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => handleEdit(blog)}
+                        onClick={() => handleEdit(position)}
                         className="p-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition-colors"
                         title="Edit"
                       >
                         <Edit className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(blog.id)}
+                        onClick={() => handleDelete(position.id)}
                         className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                         title="Delete"
                       >

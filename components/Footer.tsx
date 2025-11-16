@@ -81,17 +81,6 @@ export function Footer() {
                 <Linkedin className="h-5 w-5 group-hover:scale-110" />
               </a>
               <a 
-                href="https://www.threads.com/@moneydesk.co" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group text-gray-400 hover:text-primary-500 transition-all transform hover:-translate-y-1"
-                aria-label="Threads"
-              >
-                <svg className="h-5 w-5 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.186 8.302c1.227 0 2.34.61 3.018 1.54a3.74 3.74 0 0 1 3.018-1.54c2.07 0 3.75 1.68 3.75 3.75 0 3.24-3.75 7.5-6.75 7.5s-6.75-4.26-6.75-7.5c0-2.07 1.68-3.75 3.75-3.75zm0-2.25c-3.31 0-6 2.69-6 6 0 4.5 4.5 9.75 9.75 9.75s9.75-5.25 9.75-9.75c0-3.31-2.69-6-6-6z"/>
-                </svg>
-              </a>
-              <a 
                 href="https://x.com/Moneydesk_co" 
                 target="_blank" 
                 rel="noopener noreferrer"
