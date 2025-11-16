@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   description: "Take control of your finances with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve your financial goals.",
   icons: {
     icon: "/header-logo.png",
+    shortcut: "/header-logo.png",
     apple: "/header-logo.png",
   },
 };

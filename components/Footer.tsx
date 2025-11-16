@@ -14,11 +14,6 @@ export function Footer() {
       { label: "Blog", href: "/blog" },
       { label: "Careers", href: "/careers" },
     ],
-    resources: [
-      { label: "Documentation", href: "#" },
-      { label: "Support", href: "/contact" },
-      { label: "API", href: "#" },
-    ],
     legal: [
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Service", href: "/terms" },
@@ -32,7 +27,7 @@ export function Footer() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4 group">
@@ -115,24 +110,6 @@ export function Footer() {
             <h3 className="font-bold text-gray-900 mb-4">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-gray-600 hover:text-primary-500 transition-all font-medium relative group"
-                  >
-                    {link.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources Links */}
-          <div>
-            <h3 className="font-bold text-gray-900 mb-4">Resources</h3>
-            <ul className="space-y-3">
-              {footerLinks.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
