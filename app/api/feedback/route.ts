@@ -134,6 +134,19 @@ export async function POST(request: NextRequest) {
       sqlState: error?.sqlState,
       errno: error?.errno,
     });
+    
+    // Check if it's a database connection error
+    if (error?.code === 'ECONNREFUSED' || error?.code === 'ER_ACCESS_DENIED_ERROR') {
+      return NextResponse.json(
+        { 
+          error: "Database connection failed. Please check environment variables.",
+          details: error?.message || "Unknown error",
+          code: error?.code,
+        },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
       { 
         error: "Failed to save feedback submission",
