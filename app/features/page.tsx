@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Check, CreditCard, Target, TrendingUp, Shield, BarChart3, Sparkles, Calendar, Bell, Globe, ArrowRight, Languages } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -225,8 +226,8 @@ export default function Features() {
             }`} style={{ transitionDelay: '400ms' }}>
               See why thousands of people trust MoneyDesk to manage their money. Start your free 14-day trial. No credit card required.
             </p>
-            <a
-              href="https://app.moneydesk.co/signup"
+            <Link
+              href="/pricing"
               className={`group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1 hover:scale-105 ${
                 ctaAnimation.isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'
               }`}
@@ -234,7 +235,7 @@ export default function Features() {
             >
               Get Started Free
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

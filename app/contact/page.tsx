@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight } from "lucide-react";
 import { Toast } from "@/components/Toast";
@@ -287,13 +288,13 @@ export default function Contact() {
               <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
                 Start your free 14-day trial and see how MoneyDesk can help you manage your money better. No credit card required.
               </p>
-              <a
-                href="https://app.moneydesk.co/signup"
+              <Link
+                href="/pricing"
                 className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1"
               >
                 Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

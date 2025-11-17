@@ -40,7 +40,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Link
-                href="https://app.moneydesk.co/signup"
+                href="/pricing"
                 className="group bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all hover:shadow-2xl hover:shadow-primary-500/50 inline-flex items-center justify-center transform hover:-translate-y-1"
               >
                 Get Started Free
@@ -224,7 +224,7 @@ export default function Home() {
               Start your free 14-day trial. No credit card needed.
             </p>
             <Link
-              href="https://app.moneydesk.co/signup"
+              href="/pricing"
               className={`group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1 hover:scale-105 ${
                 ctaAnimation.isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'
               }`}

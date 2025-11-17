@@ -68,7 +68,7 @@ export function Header() {
               Sign In
             </Link>
             <Link
-              href="https://app.moneydesk.co/signup"
+              href="/pricing"
               className="bg-gradient-to-r from-secondary-dark to-secondary text-white px-6 py-2 rounded-lg hover:from-secondary hover:to-secondary-light transition-all font-medium shadow-sm hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Get Started
@@ -118,7 +118,7 @@ export function Header() {
                 Sign In
               </Link>
               <Link
-                href="https://app.moneydesk.co/signup"
+                href="/pricing"
                 className="block bg-gradient-to-r from-secondary-dark to-secondary text-white px-6 py-2 rounded-lg text-center hover:from-secondary hover:to-secondary-light transition-all duration-300 shadow-sm transform hover:scale-105"
                 onClick={() => setMobileMenuOpen(false)}
               >

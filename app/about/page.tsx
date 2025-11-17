@@ -304,7 +304,7 @@ export default function About() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="https://app.moneydesk.co/signup"
+                href="/pricing"
                 className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center justify-center transform hover:-translate-y-1 hover:scale-105"
               >
                 Get Started Free
