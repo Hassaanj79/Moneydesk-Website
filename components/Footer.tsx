@@ -8,6 +8,7 @@ export function Footer() {
       { label: "Features", href: "/features" },
       { label: "Pricing", href: "/pricing" },
       { label: "Security", href: "/security" },
+      { label: "Enhancement Portal", href: "/feedback" },
     ],
     company: [
       { label: "About", href: "#" },
