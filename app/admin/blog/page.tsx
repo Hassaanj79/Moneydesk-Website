@@ -96,15 +96,15 @@ export default function BlogAdmin() {
   const loadBlogs = () => {
     const storedBlogs = localStorage.getItem("moneydesk_blogs");
     if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
+      setBlogs(JSON.parse(storedBlogs) as BlogPost[]);
     }
   };
 
   const getExistingCategories = (): string[] => {
     const storedBlogs = localStorage.getItem("moneydesk_blogs");
     if (storedBlogs) {
-      const blogs = JSON.parse(storedBlogs);
-      const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean));
+      const blogs = JSON.parse(storedBlogs) as BlogPost[];
+      const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
       return Array.from(categories).sort();
     }
     return [];
@@ -113,7 +113,7 @@ export default function BlogAdmin() {
   const loadSubscribers = () => {
     const storedSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
     if (storedSubscribers) {
-      const subs = JSON.parse(storedSubscribers);
+      const subs = JSON.parse(storedSubscribers) as NewsletterSubscriber[];
       // Sort by most recent first
       subs.sort((a: NewsletterSubscriber, b: NewsletterSubscriber) => 
         new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
@@ -125,7 +125,7 @@ export default function BlogAdmin() {
   const loadContactSubmissions = () => {
     const storedSubmissions = localStorage.getItem("moneydesk_contact_submissions");
     if (storedSubmissions) {
-      const subs = JSON.parse(storedSubmissions);
+      const subs = JSON.parse(storedSubmissions) as ContactSubmission[];
       // Sort by most recent first
       subs.sort((a: ContactSubmission, b: ContactSubmission) => 
         new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()

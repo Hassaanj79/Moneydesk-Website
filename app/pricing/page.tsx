@@ -209,11 +209,11 @@ export default function Pricing() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       {plan.name}
                     </h3>
-                    {"savings" in plan && plan.savings && (
+                    {("savings" in plan && plan.savings) ? (
                       <span className="bg-success/20 text-success-dark text-xs font-semibold px-2 py-1 rounded">
-                        {plan.savings}
+                        {String(plan.savings)}
                       </span>
-                    )}
+                    ) : null}
                   </div>
                   <div className="flex items-baseline mb-2">
                     <span className="text-5xl font-bold text-gray-900">
@@ -223,11 +223,11 @@ export default function Pricing() {
                       {plan.period === "one-time" ? "" : "/"}{plan.period}
                     </span>
                   </div>
-                  {"originalPrice" in plan && plan.originalPrice && (
+                  {("originalPrice" in plan && plan.originalPrice) ? (
                     <p className="text-sm text-gray-500 line-through mb-1">
-                      {plan.originalPrice} per year
+                      {String(plan.originalPrice)} per year
                     </p>
-                  )}
+                  ) : null}
                   <p className="text-gray-600">{plan.description}</p>
                 </div>
                 <ul className="space-y-4 mb-8">
