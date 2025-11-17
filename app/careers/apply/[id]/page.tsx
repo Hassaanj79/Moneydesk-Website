@@ -39,15 +39,31 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     if (!jobId) return;
     
-    // Load job position from localStorage
-    const storedPositions = localStorage.getItem("moneydesk_job_positions");
-    if (storedPositions) {
-      const positions = JSON.parse(storedPositions);
-      const foundJob = positions.find((p: JobPosition) => p.id === jobId);
-      if (foundJob && foundJob.published) {
-        setJob(foundJob);
+    // Load job position from API
+    const loadJob = async () => {
+      try {
+        const response = await fetch("/api/jobs/positions?published=true");
+        const data = await response.json();
+        if (data.success && data.positions) {
+          const foundJob = data.positions.find((p: JobPosition) => p.id === jobId);
+          if (foundJob) {
+            setJob(foundJob);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading job position:", error);
+        // Fallback to localStorage
+        const storedPositions = localStorage.getItem("moneydesk_job_positions");
+        if (storedPositions) {
+          const positions = JSON.parse(storedPositions);
+          const foundJob = positions.find((p: JobPosition) => p.id === jobId);
+          if (foundJob && foundJob.published) {
+            setJob(foundJob);
+          }
+        }
       }
-    }
+    };
+    loadJob();
   }, [jobId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,25 +73,30 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
     setIsSubmitting(true);
 
     try {
-      // Get existing applications
-      const existingApplications = localStorage.getItem("moneydesk_job_applications");
-      const applications = existingApplications ? JSON.parse(existingApplications) : [];
-
       // Create new application
       const newApplication = {
         id: Date.now().toString(),
-        jobId: job.id,
-        jobTitle: job.title,
-        applicantName: formData.name,
-        applicantEmail: formData.email,
-        applicantPhone: formData.phone || undefined,
+        positionId: job.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || "",
         coverLetter: formData.coverLetter,
         appliedAt: new Date().toISOString(),
         date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
       };
 
-      applications.push(newApplication);
-      localStorage.setItem("moneydesk_job_applications", JSON.stringify(applications));
+      // Save to database via API
+      const response = await fetch("/api/jobs/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newApplication),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to submit application");
+      }
 
       // Send notification email (optional)
       try {

@@ -24,14 +24,26 @@ export default function Careers() {
   const [openPositions, setOpenPositions] = useState<JobPosition[]>([]);
 
   useEffect(() => {
-    // Load positions from localStorage
-    const storedPositions = localStorage.getItem("moneydesk_job_positions");
-    if (storedPositions) {
-      const positions = JSON.parse(storedPositions);
-      // Only show published positions
-      const publishedPositions = positions.filter((job: JobPosition) => job.published);
-      setOpenPositions(publishedPositions);
-    }
+    // Load positions from API
+    const loadPositions = async () => {
+      try {
+        const response = await fetch("/api/jobs/positions?published=true");
+        const data = await response.json();
+        if (data.success && data.positions) {
+          setOpenPositions(data.positions);
+        }
+      } catch (error) {
+        console.error("Error loading job positions:", error);
+        // Fallback to localStorage
+        const storedPositions = localStorage.getItem("moneydesk_job_positions");
+        if (storedPositions) {
+          const positions = JSON.parse(storedPositions);
+          const publishedPositions = positions.filter((job: JobPosition) => job.published);
+          setOpenPositions(publishedPositions);
+        }
+      }
+    };
+    loadPositions();
   }, []);
 
   const benefits = [

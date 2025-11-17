@@ -98,44 +98,67 @@ export default function BlogAdmin() {
     }
   };
 
-  const loadBlogs = () => {
-    const storedBlogs = localStorage.getItem("moneydesk_blogs");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs) as BlogPost[]);
+  const loadBlogs = async () => {
+    try {
+      const response = await fetch("/api/blogs");
+      const data = await response.json();
+      if (data.success && data.blogs) {
+        setBlogs(data.blogs);
+      }
+    } catch (error) {
+      console.error("Error loading blogs:", error);
+      // Fallback to localStorage
+      const storedBlogs = localStorage.getItem("moneydesk_blogs");
+      if (storedBlogs) {
+        setBlogs(JSON.parse(storedBlogs) as BlogPost[]);
+      }
     }
   };
 
   const getExistingCategories = (): string[] => {
-    const storedBlogs = localStorage.getItem("moneydesk_blogs");
-    if (storedBlogs) {
-      const blogs = JSON.parse(storedBlogs) as BlogPost[];
-      const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
-      return Array.from(categories).sort();
-    }
-    return [];
+    const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
+    return Array.from(categories).sort();
   };
 
-  const loadSubscribers = () => {
-    const storedSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
-    if (storedSubscribers) {
-      const subs = JSON.parse(storedSubscribers) as NewsletterSubscriber[];
-      // Sort by most recent first
-      subs.sort((a: NewsletterSubscriber, b: NewsletterSubscriber) => 
-        new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
-      );
-      setSubscribers(subs);
+  const loadSubscribers = async () => {
+    try {
+      const response = await fetch("/api/newsletter/subscribers");
+      const data = await response.json();
+      if (data.success && data.subscribers) {
+        setSubscribers(data.subscribers);
+      }
+    } catch (error) {
+      console.error("Error loading subscribers:", error);
+      // Fallback to localStorage
+      const storedSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
+      if (storedSubscribers) {
+        const subs = JSON.parse(storedSubscribers) as NewsletterSubscriber[];
+        subs.sort((a: NewsletterSubscriber, b: NewsletterSubscriber) => 
+          new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
+        );
+        setSubscribers(subs);
+      }
     }
   };
 
-  const loadContactSubmissions = () => {
-    const storedSubmissions = localStorage.getItem("moneydesk_contact_submissions");
-    if (storedSubmissions) {
-      const subs = JSON.parse(storedSubmissions) as ContactSubmission[];
-      // Sort by most recent first
-      subs.sort((a: ContactSubmission, b: ContactSubmission) => 
-        new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-      );
-      setContactSubmissions(subs);
+  const loadContactSubmissions = async () => {
+    try {
+      const response = await fetch("/api/contact/submissions");
+      const data = await response.json();
+      if (data.success && data.submissions) {
+        setContactSubmissions(data.submissions);
+      }
+    } catch (error) {
+      console.error("Error loading contact submissions:", error);
+      // Fallback to localStorage
+      const storedSubmissions = localStorage.getItem("moneydesk_contact_submissions");
+      if (storedSubmissions) {
+        const subs = JSON.parse(storedSubmissions) as ContactSubmission[];
+        subs.sort((a: ContactSubmission, b: ContactSubmission) => 
+          new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+        );
+        setContactSubmissions(subs);
+      }
     }
   };
 
@@ -190,9 +213,24 @@ export default function BlogAdmin() {
     window.URL.revokeObjectURL(url);
   };
 
-  const saveBlogs = (updatedBlogs: BlogPost[]) => {
-    localStorage.setItem("moneydesk_blogs", JSON.stringify(updatedBlogs));
-    setBlogs(updatedBlogs);
+  const saveBlogs = async (updatedBlogs: BlogPost[]) => {
+    // Save to database via API
+    try {
+      // Save each blog individually (or batch if needed)
+      for (const blog of updatedBlogs) {
+        await fetch("/api/blogs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(blog),
+        });
+      }
+      setBlogs(updatedBlogs);
+    } catch (error) {
+      console.error("Error saving blogs:", error);
+      // Fallback to localStorage
+      localStorage.setItem("moneydesk_blogs", JSON.stringify(updatedBlogs));
+      setBlogs(updatedBlogs);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -414,7 +452,7 @@ export default function BlogAdmin() {
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Get final content from editor
@@ -433,16 +471,34 @@ export default function BlogAdmin() {
       coverPhoto: formData.coverPhoto || undefined,
     };
 
-    let updatedBlogs;
-    if (editingBlog) {
-      updatedBlogs = blogs.map((b) => (b.id === editingBlog.id ? blogPost : b));
-    } else {
-      updatedBlogs = [...blogs, blogPost];
-    }
+    try {
+      // Save to database via API
+      const response = await fetch("/api/blogs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(blogPost),
+      });
 
-    saveBlogs(updatedBlogs);
-    resetForm();
-    alert("Blog saved successfully!");
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state
+        let updatedBlogs;
+        if (editingBlog) {
+          updatedBlogs = blogs.map((b) => (b.id === editingBlog.id ? blogPost : b));
+        } else {
+          updatedBlogs = [...blogs, blogPost];
+        }
+        setBlogs(updatedBlogs);
+        resetForm();
+        alert("Blog saved successfully!");
+      } else {
+        throw new Error(data.error || "Failed to save blog");
+      }
+    } catch (error) {
+      console.error("Error saving blog:", error);
+      alert("Failed to save blog. Please try again.");
+    }
   };
 
   const calculateReadTime = (content: string): string => {
@@ -474,10 +530,29 @@ export default function BlogAdmin() {
     }, 100);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this blog post?")) {
-      const updatedBlogs = blogs.filter((b) => b.id !== id);
-      saveBlogs(updatedBlogs);
+      try {
+        const response = await fetch(`/api/blogs?id=${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          const updatedBlogs = blogs.filter((b) => b.id !== id);
+          setBlogs(updatedBlogs);
+        } else {
+          throw new Error(data.error || "Failed to delete blog");
+        }
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+        alert("Failed to delete blog. Please try again.");
+        // Fallback to localStorage
+        const updatedBlogs = blogs.filter((b) => b.id !== id);
+        localStorage.setItem("moneydesk_blogs", JSON.stringify(updatedBlogs));
+        setBlogs(updatedBlogs);
+      }
     }
   };
 

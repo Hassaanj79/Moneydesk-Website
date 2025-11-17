@@ -70,16 +70,26 @@ export default function FeedbackAdmin() {
     }
   };
 
-  const loadSubmissions = () => {
-    const stored = localStorage.getItem("moneydesk_feedback");
-    if (stored) {
-      const parsed = JSON.parse(stored) as FeedbackSubmission[];
-      setSubmissions(parsed);
+  const loadSubmissions = async () => {
+    try {
+      const response = await fetch("/api/feedback");
+      const data = await response.json();
+      if (data.success && data.submissions) {
+        setSubmissions(data.submissions);
+      }
+    } catch (error) {
+      console.error("Error loading feedback submissions:", error);
+      // Fallback to localStorage
+      const stored = localStorage.getItem("moneydesk_feedback");
+      if (stored) {
+        const parsed = JSON.parse(stored) as FeedbackSubmission[];
+        setSubmissions(parsed);
+      }
     }
   };
 
   const saveSubmissions = (updated: FeedbackSubmission[]) => {
-    localStorage.setItem("moneydesk_feedback", JSON.stringify(updated));
+    // This function is kept for compatibility but submissions are saved via API
     setSubmissions(updated);
   };
 
@@ -107,17 +117,55 @@ export default function FeedbackAdmin() {
     setFilteredSubmissions(filtered);
   };
 
-  const updateStatus = (id: string, newStatus: FeedbackSubmission["status"]) => {
-    const updated = submissions.map((sub) =>
-      sub.id === id ? { ...sub, status: newStatus } : sub
-    );
-    saveSubmissions(updated);
+  const updateStatus = async (id: string, newStatus: FeedbackSubmission["status"]) => {
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        const updated = submissions.map((sub) =>
+          sub.id === id ? { ...sub, status: newStatus } : sub
+        );
+        setSubmissions(updated);
+      } else {
+        throw new Error(data.error || "Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      // Fallback to localStorage
+      const updated = submissions.map((sub) =>
+        sub.id === id ? { ...sub, status: newStatus } : sub
+      );
+      localStorage.setItem("moneydesk_feedback", JSON.stringify(updated));
+      setSubmissions(updated);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this submission?")) {
-      const updated = submissions.filter((sub) => sub.id !== id);
-      saveSubmissions(updated);
+      try {
+        const response = await fetch(`/api/feedback?id=${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          const updated = submissions.filter((sub) => sub.id !== id);
+          setSubmissions(updated);
+        } else {
+          throw new Error(data.error || "Failed to delete submission");
+        }
+      } catch (error) {
+        console.error("Error deleting submission:", error);
+        // Fallback to localStorage
+        const updated = submissions.filter((sub) => sub.id !== id);
+        localStorage.setItem("moneydesk_feedback", JSON.stringify(updated));
+        setSubmissions(updated);
+      }
     }
   };
 

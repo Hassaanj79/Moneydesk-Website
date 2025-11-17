@@ -27,19 +27,36 @@ export default function Blog() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    // Load blogs from localStorage
-    const storedBlogs = localStorage.getItem("moneydesk_blogs");
-    if (storedBlogs) {
-      const blogs = JSON.parse(storedBlogs);
-      // Only show published blogs, sorted by date (newest first)
-      const publishedBlogs = blogs
-        .filter((blog: BlogPost) => blog.published)
-        .sort((a: BlogPost, b: BlogPost) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-      setBlogPosts(publishedBlogs);
-      setFilteredPosts(publishedBlogs);
-    }
+    // Load blogs from API
+    const loadBlogs = async () => {
+      try {
+        const response = await fetch("/api/blogs?published=true");
+        const data = await response.json();
+        if (data.success && data.blogs) {
+          // Sort by date (newest first)
+          const sortedBlogs = data.blogs.sort((a: BlogPost, b: BlogPost) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          setBlogPosts(sortedBlogs);
+          setFilteredPosts(sortedBlogs);
+        }
+      } catch (error) {
+        console.error("Error loading blogs:", error);
+        // Fallback to localStorage if API fails
+        const storedBlogs = localStorage.getItem("moneydesk_blogs");
+        if (storedBlogs) {
+          const blogs = JSON.parse(storedBlogs);
+          const publishedBlogs = blogs
+            .filter((blog: BlogPost) => blog.published)
+            .sort((a: BlogPost, b: BlogPost) => {
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+          setBlogPosts(publishedBlogs);
+          setFilteredPosts(publishedBlogs);
+        }
+      }
+    };
+    loadBlogs();
   }, []);
 
   // Get unique categories
@@ -66,23 +83,33 @@ export default function Blog() {
     setIsSubmitting(true);
     
     try {
-      const existingSubscribers = localStorage.getItem("moneydesk_newsletter_subscribers");
-      const subscribers = existingSubscribers ? JSON.parse(existingSubscribers) : [];
-      
-      if (subscribers.some((sub: { email: string }) => sub.email.toLowerCase() === emailValue)) {
+      const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      const subscribedAt = new Date().toISOString();
+
+      // Save to database via API
+      const response = await fetch("/api/newsletter/subscribers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: emailValue,
+          date,
+          subscribedAt,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.error && data.error.includes("already subscribed")) {
+          alert("This email is already subscribed!");
+        } else {
+          alert("Failed to subscribe. Please try again.");
+        }
         setIsSubmitting(false);
-        alert("This email is already subscribed!");
         return;
       }
-
-      const newSubscriber = {
-        email: emailValue,
-        subscribedAt: new Date().toISOString(),
-        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-      };
-
-      subscribers.push(newSubscriber);
-      localStorage.setItem("moneydesk_newsletter_subscribers", JSON.stringify(subscribers));
 
       setEmail("");
       setSubscribed(true);
@@ -94,12 +121,17 @@ export default function Blog() {
         setSubscribed(false);
       }, 5000);
 
+      // Send email notification
       fetch("/api/newsletter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newSubscriber),
+        body: JSON.stringify({
+          email: emailValue,
+          date,
+          subscribedAt,
+        }),
       })
       .then(response => {
         if (response.ok) {

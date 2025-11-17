@@ -16,7 +16,6 @@ export default function Contact() {
     e.preventDefault();
     
     try {
-      // Save to localStorage for admin viewing
       const submission = {
         id: Date.now().toString(),
         name: formData.name,
@@ -27,13 +26,21 @@ export default function Contact() {
         date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
       };
 
-      const existingSubmissions = localStorage.getItem("moneydesk_contact_submissions");
-      const submissions = existingSubmissions ? JSON.parse(existingSubmissions) : [];
-      submissions.push(submission);
-      localStorage.setItem("moneydesk_contact_submissions", JSON.stringify(submissions));
+      // Save to database via API
+      const saveResponse = await fetch("/api/contact/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submission),
+      });
+
+      const saveData = await saveResponse.json();
+
+      if (!saveData.success) {
+        throw new Error(saveData.error || "Failed to save submission");
+      }
 
       // Send email notification to support@moneydesk.co
-      const response = await fetch("/api/contact", {
+      const emailResponse = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +48,7 @@ export default function Contact() {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
+      if (emailResponse.ok) {
         console.log("✅ Contact form submission sent successfully");
       } else {
         console.error("⚠️ Failed to send contact form submission");

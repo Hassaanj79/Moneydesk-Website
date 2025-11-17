@@ -54,16 +54,26 @@ export default function FeedbackPage() {
     filterAndSortSubmissions();
   }, [submissions, filterType, sortBy]);
 
-  const loadSubmissions = () => {
-    const stored = localStorage.getItem("moneydesk_feedback");
-    if (stored) {
-      const parsed = JSON.parse(stored) as FeedbackSubmission[];
-      setSubmissions(parsed);
+  const loadSubmissions = async () => {
+    try {
+      const response = await fetch("/api/feedback");
+      const data = await response.json();
+      if (data.success && data.submissions) {
+        setSubmissions(data.submissions);
+      }
+    } catch (error) {
+      console.error("Error loading feedback submissions:", error);
+      // Fallback to localStorage
+      const stored = localStorage.getItem("moneydesk_feedback");
+      if (stored) {
+        const parsed = JSON.parse(stored) as FeedbackSubmission[];
+        setSubmissions(parsed);
+      }
     }
   };
 
-  const saveSubmissions = (updated: FeedbackSubmission[]) => {
-    localStorage.setItem("moneydesk_feedback", JSON.stringify(updated));
+  const saveSubmissions = async (updated: FeedbackSubmission[]) => {
+    // This function is kept for compatibility but submissions are saved via API in handleSubmit
     setSubmissions(updated);
   };
 
@@ -117,85 +127,141 @@ export default function FeedbackPage() {
 
     setSubmitting(true);
 
-    const newSubmission: FeedbackSubmission = {
-      id: Date.now().toString(),
-      title: formData.title.trim(),
-      description: formData.description.trim(),
-      type: formData.type,
-      status: "under-review",
-      votes: 0,
-      voters: [],
-      comments: [],
-      submittedBy: formData.name.trim() || "Anonymous User",
-      submittedByName: formData.name.trim(),
-      submittedByEmail: formData.email.trim(),
-      submittedAt: new Date().toISOString(),
-      date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-    };
+    try {
+      const newSubmission = {
+        id: Date.now().toString(),
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        type: formData.type,
+        status: "under-review",
+        submittedBy: formData.name.trim() || "Anonymous User",
+        submittedByName: formData.name.trim(),
+        submittedByEmail: formData.email.trim(),
+        submittedAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+      };
 
-    const updated = [...submissions, newSubmission];
-    saveSubmissions(updated);
-    
-    setFormData({ title: "", description: "", type: "enhancement", name: "", email: "" });
-    setShowForm(false);
-    setSubmitting(false);
-    alert("Thank you for your feedback! Your submission has been received.");
-  };
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSubmission),
+      });
 
-  const handleVote = (submissionId: string) => {
-    const userId = getUserIdentifier();
-    const updated = submissions.map((sub) => {
-      if (sub.id === submissionId) {
-        const hasVoted = sub.voters.includes(userId);
-        if (hasVoted) {
-          // Remove vote
-          return {
-            ...sub,
-            votes: Math.max(0, sub.votes - 1),
-            voters: sub.voters.filter((v) => v !== userId),
-          };
-        } else {
-          // Add vote
-          return {
-            ...sub,
-            votes: sub.votes + 1,
-            voters: [...sub.voters, userId],
-          };
-        }
+      const data = await response.json();
+
+      if (data.success) {
+        setFormData({ title: "", description: "", type: "enhancement", name: "", email: "" });
+        setShowForm(false);
+        setSubmitting(false);
+        alert("Thank you for your feedback! Your submission has been received.");
+        // Reload submissions to show the new one
+        loadSubmissions();
+      } else {
+        throw new Error(data.error || "Failed to submit feedback");
       }
-      return sub;
-    });
-    saveSubmissions(updated);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      setSubmitting(false);
+      alert("Failed to submit feedback. Please try again.");
+    }
   };
 
-  const handleCommentSubmit = (submissionId: string) => {
+  const handleVote = async (submissionId: string) => {
+    const userId = getUserIdentifier();
+    try {
+      const response = await fetch("/api/feedback/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ submissionId, userIdentifier: userId }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // Reload submissions to get updated vote count
+        loadSubmissions();
+      }
+    } catch (error) {
+      console.error("Error voting:", error);
+      // Fallback to localStorage update
+      const updated = submissions.map((sub) => {
+        if (sub.id === submissionId) {
+          const hasVoted = sub.voters.includes(userId);
+          if (hasVoted) {
+            return {
+              ...sub,
+              votes: Math.max(0, sub.votes - 1),
+              voters: sub.voters.filter((v) => v !== userId),
+            };
+          } else {
+            return {
+              ...sub,
+              votes: sub.votes + 1,
+              voters: [...sub.voters, userId],
+            };
+          }
+        }
+        return sub;
+      });
+      setSubmissions(updated);
+    }
+  };
+
+  const handleCommentSubmit = async (submissionId: string) => {
     if (!commentText.trim() || !commentAuthor.trim()) {
       alert("Please enter your name and comment");
       return;
     }
 
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      author: commentAuthor.trim(),
-      content: commentText.trim(),
-      submittedAt: new Date().toISOString(),
-      date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-    };
+    try {
+      const newComment = {
+        id: Date.now().toString(),
+        submissionId,
+        author: commentAuthor.trim(),
+        content: commentText.trim(),
+        submittedAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+      };
 
-    const updated = submissions.map((sub) => {
-      if (sub.id === submissionId) {
-        return {
-          ...sub,
-          comments: [...sub.comments, newComment],
-        };
+      const response = await fetch("/api/feedback/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newComment),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setCommentText("");
+        setCommentAuthor("");
+        setShowCommentForm(null);
+        // Reload submissions to show the new comment
+        loadSubmissions();
+      } else {
+        throw new Error(data.error || "Failed to add comment");
       }
-      return sub;
-    });
-
-    saveSubmissions(updated);
-    setCommentText("");
-    setCommentAuthor("");
-    setShowCommentForm(null);
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      // Fallback to localStorage update
+      const newComment: Comment = {
+        id: Date.now().toString(),
+        author: commentAuthor.trim(),
+        content: commentText.trim(),
+        submittedAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+      };
+      const updated = submissions.map((sub) => {
+        if (sub.id === submissionId) {
+          return {
+            ...sub,
+            comments: [...sub.comments, newComment],
+          };
+        }
+        return sub;
+      });
+      setSubmissions(updated);
+      setCommentText("");
+      setCommentAuthor("");
+      setShowCommentForm(null);
+    }
   };
 
   const getStatusBadge = (status: string) => {

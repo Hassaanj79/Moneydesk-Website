@@ -77,30 +77,54 @@ export default function CareersAdmin() {
     }
   };
 
-  const loadPositions = () => {
-    const storedPositions = localStorage.getItem("moneydesk_job_positions");
-    if (storedPositions) {
-      setPositions(JSON.parse(storedPositions));
+  const loadPositions = async () => {
+    try {
+      const response = await fetch("/api/jobs/positions");
+      const data = await response.json();
+      if (data.success && data.positions) {
+        setPositions(data.positions);
+      }
+    } catch (error) {
+      console.error("Error loading job positions:", error);
+      // Fallback to localStorage
+      const storedPositions = localStorage.getItem("moneydesk_job_positions");
+      if (storedPositions) {
+        setPositions(JSON.parse(storedPositions));
+      }
     }
   };
 
-  const loadApplications = () => {
-    const storedApplications = localStorage.getItem("moneydesk_job_applications");
-    if (storedApplications) {
-      const apps = JSON.parse(storedApplications);
-      apps.sort((a: JobApplication, b: JobApplication) => 
-        new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()
-      );
-      setApplications(apps);
+  const loadApplications = async () => {
+    try {
+      const response = await fetch("/api/jobs/applications");
+      const data = await response.json();
+      if (data.success && data.applications) {
+        const apps = data.applications;
+        apps.sort((a: JobApplication, b: JobApplication) => 
+          new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()
+        );
+        setApplications(apps);
+      }
+    } catch (error) {
+      console.error("Error loading job applications:", error);
+      // Fallback to localStorage
+      const storedApplications = localStorage.getItem("moneydesk_job_applications");
+      if (storedApplications) {
+        const apps = JSON.parse(storedApplications);
+        apps.sort((a: JobApplication, b: JobApplication) => 
+          new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()
+        );
+        setApplications(apps);
+      }
     }
   };
 
   const savePositions = (updatedPositions: JobPosition[]) => {
-    localStorage.setItem("moneydesk_job_positions", JSON.stringify(updatedPositions));
+    // This function is kept for compatibility but positions are saved via API
     setPositions(updatedPositions);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const position: JobPosition = {
@@ -114,16 +138,34 @@ export default function CareersAdmin() {
       published: formData.published,
     };
 
-    let updatedPositions;
-    if (editingPosition) {
-      updatedPositions = positions.map((p) => (p.id === editingPosition.id ? position : p));
-    } else {
-      updatedPositions = [...positions, position];
-    }
+    try {
+      // Save to database via API
+      const response = await fetch("/api/jobs/positions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(position),
+      });
 
-    savePositions(updatedPositions);
-    resetForm();
-    alert("Job position saved successfully!");
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state
+        let updatedPositions;
+        if (editingPosition) {
+          updatedPositions = positions.map((p) => (p.id === editingPosition.id ? position : p));
+        } else {
+          updatedPositions = [...positions, position];
+        }
+        setPositions(updatedPositions);
+        resetForm();
+        alert("Job position saved successfully!");
+      } else {
+        throw new Error(data.error || "Failed to save position");
+      }
+    } catch (error) {
+      console.error("Error saving job position:", error);
+      alert("Failed to save job position. Please try again.");
+    }
   };
 
   const handleEdit = (position: JobPosition) => {
@@ -140,10 +182,29 @@ export default function CareersAdmin() {
     setShowEditor(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this job position?")) {
-      const updatedPositions = positions.filter((p) => p.id !== id);
-      savePositions(updatedPositions);
+      try {
+        const response = await fetch(`/api/jobs/positions?id=${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          const updatedPositions = positions.filter((p) => p.id !== id);
+          setPositions(updatedPositions);
+        } else {
+          throw new Error(data.error || "Failed to delete position");
+        }
+      } catch (error) {
+        console.error("Error deleting job position:", error);
+        alert("Failed to delete job position. Please try again.");
+        // Fallback to localStorage
+        const updatedPositions = positions.filter((p) => p.id !== id);
+        localStorage.setItem("moneydesk_job_positions", JSON.stringify(updatedPositions));
+        setPositions(updatedPositions);
+      }
     }
   };
 

@@ -22,42 +22,50 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
 
   useEffect(() => {
-    // Try to get from sessionStorage first (if navigated from list)
-    const selectedBlog = sessionStorage.getItem("selectedBlog");
-    if (selectedBlog) {
-      const blogData = JSON.parse(selectedBlog);
-      setBlog(blogData);
-      sessionStorage.removeItem("selectedBlog");
-      
-      // Load related posts
-      const storedBlogs = localStorage.getItem("moneydesk_blogs");
-      if (storedBlogs) {
-        const blogs = JSON.parse(storedBlogs);
-        const publishedBlogs = blogs.filter((b: BlogPost) => b.published && b.id !== blogData.id);
-        // Get posts from same category first, then others
-        const sameCategory = publishedBlogs.filter((b: BlogPost) => b.category === blogData.category);
-        const otherPosts = publishedBlogs.filter((b: BlogPost) => b.category !== blogData.category);
-        const related = [...sameCategory, ...otherPosts].slice(0, 3);
-        setRelatedPosts(related);
-      }
-    } else {
-      // Otherwise, load from localStorage
-      const storedBlogs = localStorage.getItem("moneydesk_blogs");
-      if (storedBlogs) {
-        const blogs = JSON.parse(storedBlogs);
-        const foundBlog = blogs.find((b: BlogPost) => b.id === params.id);
-        if (foundBlog && foundBlog.published) {
-          setBlog(foundBlog);
+    // Load blog from API
+    const loadBlog = async () => {
+      try {
+        const response = await fetch(`/api/blogs/${params.id}`);
+        const data = await response.json();
+        
+        if (data.success && data.blog && data.blog.published) {
+          setBlog(data.blog);
           
-          // Load related posts
-          const publishedBlogs = blogs.filter((b: BlogPost) => b.published && b.id !== foundBlog.id);
-          const sameCategory = publishedBlogs.filter((b: BlogPost) => b.category === foundBlog.category);
-          const otherPosts = publishedBlogs.filter((b: BlogPost) => b.category !== foundBlog.category);
-          const related = [...sameCategory, ...otherPosts].slice(0, 3);
-          setRelatedPosts(related);
+          // Load related posts from API
+          const blogsResponse = await fetch("/api/blogs?published=true");
+          const blogsData = await blogsResponse.json();
+          
+          if (blogsData.success && blogsData.blogs) {
+            const publishedBlogs = blogsData.blogs.filter((b: BlogPost) => b.id !== data.blog.id);
+            // Get posts from same category first, then others
+            const sameCategory = publishedBlogs.filter((b: BlogPost) => b.category === data.blog.category);
+            const otherPosts = publishedBlogs.filter((b: BlogPost) => b.category !== data.blog.category);
+            const related = [...sameCategory, ...otherPosts].slice(0, 3);
+            setRelatedPosts(related);
+          }
+        } else {
+          // Blog not found or not published
+          setBlog(null);
+        }
+      } catch (error) {
+        console.error("Error loading blog:", error);
+        // Fallback to localStorage
+        const storedBlogs = localStorage.getItem("moneydesk_blogs");
+        if (storedBlogs) {
+          const blogs = JSON.parse(storedBlogs);
+          const foundBlog = blogs.find((b: BlogPost) => b.id === params.id);
+          if (foundBlog && foundBlog.published) {
+            setBlog(foundBlog);
+            const publishedBlogs = blogs.filter((b: BlogPost) => b.published && b.id !== foundBlog.id);
+            const sameCategory = publishedBlogs.filter((b: BlogPost) => b.category === foundBlog.category);
+            const otherPosts = publishedBlogs.filter((b: BlogPost) => b.category !== foundBlog.category);
+            const related = [...sameCategory, ...otherPosts].slice(0, 3);
+            setRelatedPosts(related);
+          }
         }
       }
-    }
+    };
+    loadBlog();
   }, [params.id]);
 
   if (!blog) {
