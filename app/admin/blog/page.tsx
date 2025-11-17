@@ -278,20 +278,73 @@ export default function BlogAdmin() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Reduced to 2MB to prevent database issues (base64 encoding increases size by ~33%)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Image size should be less than 2MB. Please compress your image or use a smaller file.");
-        return;
+    if (!file) return;
+    
+    // Reduced to 2MB to prevent database issues (base64 encoding increases size by ~33%)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image size should be less than 2MB. Please compress your image or use a smaller file.");
+      return;
+    }
+    
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      alert("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
+      return;
+    }
+    
+    // Ensure we're in browser environment
+    if (typeof window === 'undefined' || typeof Image === 'undefined') {
+      // Fallback: just read the file without dimension check
+      const reader = new FileReader();
+      reader.onerror = () => {
+        alert("Error reading image file. Please try again.");
+      };
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        if (result && result.length > 0) {
+          const base64Size = result.length;
+          if (base64Size > 3 * 1024 * 1024) {
+            alert("Image is too large after encoding. Please use a smaller image (max 2MB file size).");
+            return;
+          }
+          setFormData({ ...formData, coverPhoto: result });
+        } else {
+          alert("Failed to read image. Please try again.");
+        }
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
+    
+    // Check image dimensions (browser only)
+    const img = new window.Image();
+    const objectUrl = URL.createObjectURL(file);
+    
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const width = img.width;
+      const height = img.height;
+      const recommendedWidth = 1200;
+      const recommendedHeight = 628;
+      
+      // Check if dimensions match recommended size (with some tolerance)
+      const widthMatch = Math.abs(width - recommendedWidth) <= 50;
+      const heightMatch = Math.abs(height - recommendedHeight) <= 50;
+      
+      if (!widthMatch || !heightMatch) {
+        const proceed = confirm(
+          `Recommended size: 1200 × 628 px\n` +
+          `Your image: ${width} × ${height} px\n\n` +
+          `For best results (especially for social media previews), use 1200 × 628 px.\n\n` +
+          `Do you want to continue with this image?`
+        );
+        if (!proceed) {
+          return;
+        }
       }
       
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
-        alert("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
-        return;
-      }
-      
+      // Read the file as base64
       const reader = new FileReader();
       reader.onerror = () => {
         alert("Error reading image file. Please try again.");
@@ -311,7 +364,14 @@ export default function BlogAdmin() {
         }
       };
       reader.readAsDataURL(file);
-    }
+    };
+    
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      alert("Error loading image. Please try again.");
+    };
+    
+    img.src = objectUrl;
   };
 
   const updateContent = () => {
@@ -858,15 +918,16 @@ export default function BlogAdmin() {
               {/* Cover Photo Upload */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Cover Photo
+                  Cover Photo (Thumbnail)
                 </label>
                 <div className="space-y-4">
                   {formData.coverPhoto && (
-                    <div className="relative w-full h-64 rounded-xl overflow-hidden border-2 border-gray-200">
+                    <div className="relative w-full rounded-xl overflow-hidden border-2 border-gray-200" style={{ aspectRatio: '1200/628' }}>
                       <img
                         src={formData.coverPhoto}
                         alt="Cover preview"
                         className="w-full h-full object-cover"
+                        style={{ aspectRatio: '1200/628' }}
                       />
                       <button
                         type="button"
@@ -885,7 +946,10 @@ export default function BlogAdmin() {
                       <p className="mb-2 text-sm text-gray-500">
                         <span className="font-semibold">Click to upload</span> or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF or WebP (MAX. 2MB)</p>
+                      <p className="text-xs text-gray-500">
+                        <span className="font-semibold text-primary-600">Recommended: 1200 × 628 px</span> (for social media previews)
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF or WebP (MAX. 2MB)</p>
                     </div>
                     <input
                       type="file"

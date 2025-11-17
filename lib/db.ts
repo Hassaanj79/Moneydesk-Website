@@ -22,10 +22,7 @@ const dbConfig = {
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  // Performance optimizations
-  acquireTimeout: 60000,
-  timeout: 60000,
-  reconnect: true,
+  // Performance optimizations (valid MySQL2 options)
   // Reduce connection overhead
   multipleStatements: false,
 };

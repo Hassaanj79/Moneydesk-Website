@@ -140,7 +140,7 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
           <article className="lg:col-span-2">
             {/* Cover Photo */}
             {blog.coverPhoto && (
-              <div className="mb-8 rounded-xl overflow-hidden relative w-full h-96">
+              <div className="mb-8 rounded-xl overflow-hidden relative w-full" style={{ aspectRatio: '1200/628' }}>
                 <Image
                   src={blog.coverPhoto}
                   alt={blog.title}

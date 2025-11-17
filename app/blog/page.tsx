@@ -228,7 +228,7 @@ export default function Blog() {
                 className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
               >
                 {/* Cover Photo or Placeholder */}
-                <div className="h-48 bg-gradient-to-br from-primary-50 to-accent-50 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary-50 to-accent-50 relative overflow-hidden" style={{ aspectRatio: '1200/628' }}>
                   {post.coverPhoto ? (
                     <Image
                       src={post.coverPhoto}
