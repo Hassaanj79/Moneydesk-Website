@@ -37,6 +37,13 @@ export default function Pricing() {
         ? STRIPE_PRICE_IDS.monthly 
         : STRIPE_PRICE_IDS.annual;
 
+      // Validate price ID is set
+      if (!priceId || priceId.includes("placeholder")) {
+        alert("Stripe is not configured. Please contact support or check your environment variables.");
+        setLoading(null);
+        return;
+      }
+
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: {
@@ -61,11 +68,26 @@ export default function Pricing() {
         // Redirect to Stripe Checkout
         window.location.href = data.url;
       } else {
-        throw new Error(data.error || "Failed to create checkout session");
+        // If checkout fails, log error and show user-friendly message
+        console.error("Checkout failed:", data);
+        const errorMsg = data.error || "Failed to create checkout session";
+        
+        // If it's a configuration error, suggest checking environment variables
+        if (errorMsg.includes("not configured") || errorMsg.includes("Price ID")) {
+          alert(`Checkout Error: ${errorMsg}\n\nPlease ensure Stripe is properly configured.`);
+        } else {
+          alert(`Error: ${errorMsg}`);
+        }
+        setLoading(null);
       }
     } catch (error: any) {
       console.error("Checkout error:", error);
-      alert(`Error: ${error.message || "Failed to start checkout. Please try again."}`);
+      // Check if it's a JSON parse error (might mean server returned HTML error page)
+      if (error.message && error.message.includes("JSON")) {
+        alert("Server error: Please check that Stripe environment variables are set correctly in Vercel.");
+      } else {
+        alert(`Error: ${error.message || "Failed to start checkout. Please try again."}`);
+      }
       setLoading(null);
     }
   };
