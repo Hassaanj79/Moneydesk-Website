@@ -13,7 +13,7 @@
     "subtitle": "MoneyDesk helps you track expenses, manage budgets, handle loans, and achieve your financial goals—all in one place.",
     "getStartedFree": "Get Started Free",
     "viewPricing": "View Pricing",
-    "noCreditCard": "No credit card required • Free 14-day trial",
+    "noCreditCard": "Cancel anytime • Free 14-day trial",
     "featuresTitle": "Everything you need to manage your money",
     "featuresSubtitle": "Powerful features designed to help you stay on top of your finances",
     "expenseTracking": {
@@ -164,7 +164,7 @@
       },
       "freeTrial": {
         "q": "Is there a free trial?",
-        "a": "Yes! All plans come with a 14-day free trial. No credit card required to start."
+        "a": "Yes! All plans come with a 14-day free trial. Get started instantly with full access to all features."
       },
       "cancelAnytime": {
         "q": "Can I cancel anytime?",

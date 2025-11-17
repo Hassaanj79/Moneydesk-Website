@@ -18,7 +18,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "MoneyDesk - Personal Finance App | Budget Tracker & Expense Manager",
-  description: "Take control of your money with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve financial goals. Free 14-day trial. No credit card required.",
+  description: "Take control of your money with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve financial goals. Free 14-day trial. Cancel anytime.",
   keywords: "personal finance, budget tracker, expense tracking, money management, financial planning, loan management, savings goals, budget app, expense manager, financial software",
   authors: [{ name: "MoneyDesk" }],
   openGraph: {

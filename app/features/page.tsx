@@ -224,7 +224,7 @@ export default function Features() {
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              See why thousands of people trust MoneyDesk to manage their money. Start your free 14-day trial. No credit card required.
+              See why thousands of people trust MoneyDesk to manage their money. Start your free 14-day trial and unlock powerful financial insights.
             </p>
             <Link
               href="/pricing"

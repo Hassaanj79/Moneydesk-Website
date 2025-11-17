@@ -286,7 +286,7 @@ export default function Contact() {
                 Ready to take control of your finances?
               </h2>
               <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                Start your free 14-day trial and see how MoneyDesk can help you manage your money better. No credit card required.
+                Start your free 14-day trial and see how MoneyDesk can help you manage your money better. Join thousands of happy users today.
               </p>
               <Link
                 href="/pricing"

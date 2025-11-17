@@ -56,7 +56,7 @@ export default function Home() {
             <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-success" />
-                No credit card required
+                Cancel anytime
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-success" />
@@ -221,7 +221,7 @@ export default function Home() {
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              Start your free 14-day trial. No credit card needed.
+              Start your free 14-day trial. Get full access to all features instantly.
             </p>
             <Link
               href="/pricing"
