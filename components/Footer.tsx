@@ -11,7 +11,7 @@ export function Footer() {
       { label: "Enhancement Portal", href: "/feedback" },
     ],
     company: [
-      { label: "About", href: "#" },
+      { label: "About", href: "/about" },
       { label: "Blog", href: "/blog" },
       { label: "Careers", href: "/careers" },
     ],
