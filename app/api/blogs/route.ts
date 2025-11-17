@@ -66,6 +66,33 @@ export async function POST(request: NextRequest) {
       coverPhoto,
     } = body;
 
+    // Ensure category exists in blog_categories table
+    if (category && category.trim()) {
+      const categoryName = category.trim();
+      const categoryId = categoryName.toLowerCase().replace(/\s+/g, "-");
+
+      // Check if category exists
+      const existingCategory = await query(
+        "SELECT * FROM blog_categories WHERE name = ? OR id = ?",
+        [categoryName, categoryId]
+      );
+
+      // If category doesn't exist, create it
+      if (existingCategory.length === 0) {
+        try {
+          await query(
+            "INSERT INTO blog_categories (id, name) VALUES (?, ?)",
+            [categoryId, categoryName]
+          );
+        } catch (categoryError: any) {
+          // Ignore duplicate entry errors (race condition)
+          if (categoryError.code !== "ER_DUP_ENTRY" && categoryError.errno !== 1062) {
+            console.error("Error creating category:", categoryError);
+          }
+        }
+      }
+    }
+
     const sql = `
       INSERT INTO blogs (id, title, excerpt, content, author, date, read_time, category, published, cover_photo)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)

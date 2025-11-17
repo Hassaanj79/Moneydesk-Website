@@ -44,9 +44,11 @@ export default function BlogAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [contactSubmissions, setContactSubmissions] = useState<ContactSubmission[]>([]);
   const [isLoadingBlogs, setIsLoadingBlogs] = useState(false);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
   const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(false);
   const [isLoadingContact, setIsLoadingContact] = useState(false);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
@@ -75,6 +77,7 @@ export default function BlogAdmin() {
     if (auth === "authenticated" && authEmail === ADMIN_EMAIL) {
       setIsAuthenticated(true);
       loadBlogs();
+      loadCategories();
       loadSubscribers();
       loadContactSubmissions();
     } else {
@@ -93,6 +96,7 @@ export default function BlogAdmin() {
       sessionStorage.setItem("blogAdminEmail", ADMIN_EMAIL);
       setIsAuthenticated(true);
       loadBlogs();
+      loadCategories();
       loadSubscribers();
       loadContactSubmissions();
     } else {
@@ -121,17 +125,36 @@ export default function BlogAdmin() {
     }
   };
 
+  const loadCategories = async () => {
+    setIsLoadingCategories(true);
+    try {
+      const response = await fetch("/api/categories");
+      const data = await response.json();
+      if (data.success && data.categories) {
+        const categoryNames = data.categories.map((cat: any) => cat.name);
+        setCategories(categoryNames);
+      }
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      // Fallback: extract categories from blogs
+      const categoriesFromBlogs = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
+      setCategories(Array.from(categoriesFromBlogs).sort());
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
+
   const getExistingCategories = (): string[] => {
-    const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
+    const categorySet = new Set(categories);
     // If editing, ensure the current blog's category is included
-    if (editingBlog && editingBlog.category && !categories.has(editingBlog.category)) {
-      categories.add(editingBlog.category);
+    if (editingBlog && editingBlog.category && !categorySet.has(editingBlog.category)) {
+      categorySet.add(editingBlog.category);
     }
     // Also include the current formData category if it exists and is not in the list
-    if (formData.category && formData.category.trim() && !categories.has(formData.category)) {
-      categories.add(formData.category);
+    if (formData.category && formData.category.trim() && !categorySet.has(formData.category)) {
+      categorySet.add(formData.category);
     }
-    return Array.from(categories).sort();
+    return Array.from(categorySet).sort();
   };
 
   const loadSubscribers = async () => {
@@ -546,6 +569,8 @@ export default function BlogAdmin() {
         updatedBlogs = [...blogs, blogPost];
       }
       setBlogs(updatedBlogs);
+      // Reload categories in case a new one was created
+      await loadCategories();
       resetForm();
       alert("Blog saved successfully!");
     } catch (error: any) {
@@ -928,11 +953,37 @@ export default function BlogAdmin() {
                               setFormData({ ...formData, category: newCategory.trim() });
                             }
                           }}
-                          onKeyDown={(e) => {
+                          onKeyDown={async (e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
                               if (newCategory.trim()) {
-                                setFormData({ ...formData, category: newCategory.trim() });
+                                const categoryName = newCategory.trim();
+                                // Save category to database
+                                try {
+                                  const response = await fetch("/api/categories", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ name: categoryName }),
+                                  });
+                                  const data = await response.json();
+                                  if (data.success) {
+                                    // Reload categories to get the updated list
+                                    await loadCategories();
+                                    setFormData({ ...formData, category: categoryName });
+                                  } else {
+                                    // If category already exists, just use it
+                                    if (data.error?.includes("already exists")) {
+                                      await loadCategories();
+                                      setFormData({ ...formData, category: categoryName });
+                                    } else {
+                                      alert(`Error creating category: ${data.error || "Unknown error"}`);
+                                    }
+                                  }
+                                } catch (error) {
+                                  console.error("Error creating category:", error);
+                                  // Still allow using the category locally
+                                  setFormData({ ...formData, category: categoryName });
+                                }
                                 setShowNewCategoryInput(false);
                                 setNewCategory("");
                               }
@@ -947,9 +998,35 @@ export default function BlogAdmin() {
                         />
                         <button
                           type="button"
-                          onClick={() => {
+                          onClick={async () => {
                             if (newCategory.trim()) {
-                              setFormData({ ...formData, category: newCategory.trim() });
+                              const categoryName = newCategory.trim();
+                              // Save category to database
+                              try {
+                                const response = await fetch("/api/categories", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ name: categoryName }),
+                                });
+                                const data = await response.json();
+                                if (data.success) {
+                                  // Reload categories to get the updated list
+                                  await loadCategories();
+                                  setFormData({ ...formData, category: categoryName });
+                                } else {
+                                  // If category already exists, just use it
+                                  if (data.error?.includes("already exists")) {
+                                    await loadCategories();
+                                    setFormData({ ...formData, category: categoryName });
+                                  } else {
+                                    alert(`Error creating category: ${data.error || "Unknown error"}`);
+                                  }
+                                }
+                              } catch (error) {
+                                console.error("Error creating category:", error);
+                                // Still allow using the category locally
+                                setFormData({ ...formData, category: categoryName });
+                              }
                             }
                             setShowNewCategoryInput(false);
                             setNewCategory("");
