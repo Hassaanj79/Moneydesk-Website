@@ -37,12 +37,18 @@ Environment: Production, Preview, Development (select all)
 
 ### 2. Enable Remote MySQL in Hostinger
 
-1. Log in to Hostinger hPanel
+**⚠️ IMPORTANT:** This is required! Vercel's IP must be whitelisted.
+
+1. Log in to Hostinger hPanel (https://hpanel.hostinger.com)
 2. Go to **Databases** → **Remote MySQL**
 3. Add access for Vercel IPs:
-   - Option 1: Add `%` to allow all IPs (less secure but easier)
-   - Option 2: Add specific Vercel IP ranges (more secure)
-4. **Save** the changes
+   - **Option 1 (Easiest):** Add `%` to allow all IPs (less secure but easier)
+   - **Option 2:** Add specific Vercel IP: `98.92.94.151` (may change)
+   - **Option 3:** Add Vercel IP ranges (contact Vercel for current ranges)
+4. Click **Add** or **Save**
+5. Wait 1-2 minutes for changes to propagate
+
+**See [FIX_REMOTE_MYSQL.md](./FIX_REMOTE_MYSQL.md) for detailed instructions.**
 
 ### 3. Redeploy Your Application
 
