@@ -20,20 +20,20 @@ export default function About() {
   const values = [
     {
       icon: Heart,
-      title: "User-Centric",
-      description: "Everything we build starts with understanding your needs and making your financial life easier.",
+      title: "User Centric",
+      description: "Everything we build starts with understanding what you need and making your financial life easier. You're at the center of everything we do.",
       color: "primary",
     },
     {
       icon: Shield,
       title: "Security First",
-      description: "Your financial data is encrypted and protected. We take privacy and security seriously.",
+      description: "Your financial data is encrypted and protected. We take your privacy and security seriously because we know how important that is to you.",
       color: "success",
     },
     {
       icon: Zap,
       title: "Innovation",
-      description: "We're constantly improving and adding new features based on user feedback and latest technology.",
+      description: "We're constantly improving and adding new features based on what you tell us you need. Your feedback shapes what we build next.",
       color: "secondary",
     },
     {
@@ -70,7 +70,7 @@ export default function About() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> take control</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              MoneyDesk was born from a simple idea: managing your money shouldn't be complicated, stressful, or expensive.
+              Hi there! We're MoneyDesk, and we believe managing your money shouldn't be complicated, stressful, or expensive. That's why we built this for you.
             </p>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function About() {
               Making financial management simple
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We believe everyone deserves to understand and control their finances, without the complexity.
+              We believe you deserve to understand and control your finances, without all the complexity that usually comes with it.
             </p>
           </div>
 
@@ -134,10 +134,10 @@ export default function About() {
                 <Target className="w-12 h-12 text-primary-600 mb-6" />
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  To empower individuals and families to take complete control of their financial lives through intuitive, accessible, and powerful tools.
+                  We want to help you take complete control of your financial life. That's why we've built intuitive, accessible, and powerful tools that actually make sense.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  We're not just building software—we're building confidence, clarity, and financial freedom for everyone.
+                  We're not just building software here. We're building your confidence, giving you clarity, and helping you achieve financial freedom. That's what matters to us.
                 </p>
               </div>
             </div>
@@ -151,10 +151,10 @@ export default function About() {
                 <Zap className="w-12 h-12 text-secondary-dark mb-6" />
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Vision</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">
-                  A world where financial stress is a thing of the past, and everyone has the tools and knowledge to achieve their financial goals.
+                  We dream of a world where financial stress is a thing of the past. A world where you have all the tools and knowledge you need to achieve your financial goals.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  We envision a future where managing money is as natural and stress-free as checking the weather.
+                  Imagine managing your money being as natural and stress free as checking the weather. That's the future we're working toward, and we want you to be part of it.
                 </p>
               </div>
             </div>
@@ -185,16 +185,16 @@ export default function About() {
           }`}>
             <div className="bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-2xl shadow-lg border border-gray-100">
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                MoneyDesk started when we realized that managing personal finances shouldn't require a finance degree or expensive software. 
-                We saw people struggling with spreadsheets, forgetting bills, and feeling overwhelmed by their financial situation.
+                MoneyDesk started when we realized something important: you shouldn't need a finance degree or expensive software to manage your money. 
+                We saw people like you struggling with spreadsheets, forgetting bills, and feeling completely overwhelmed by their financial situation.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                We set out to create something different—a tool that's powerful enough for serious financial management, 
-                but simple enough that anyone can use it. No confusing jargon, no hidden fees, no complicated setup.
+                So we set out to create something different for you. A tool that's powerful enough for serious financial management, 
+                but simple enough that you can actually use it. No confusing jargon, no hidden fees, no complicated setup. Just you and your money, finally working together.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Today, MoneyDesk helps thousands of people around the world take control of their finances. 
-                We're constantly improving based on your feedback, because your success is our success.
+                Today, we're helping thousands of people around the world take control of their finances, and we'd love to help you too. 
+                We're constantly improving based on feedback from people like you, because when you succeed, we succeed.
               </p>
             </div>
           </div>
@@ -261,20 +261,20 @@ export default function About() {
               <span className="text-primary-600 font-semibold text-sm">Why MoneyDesk</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Built for you, by people who care
+              Built for you, by people who actually care
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
-              "Simple, intuitive interface that anyone can use",
-              "Powerful features without the complexity",
-              "Your data is encrypted and secure",
-              "No hidden fees or surprise charges",
-              "Works on all your devices",
-              "Constantly improving based on your feedback",
-              "Available in multiple languages",
-              "Dedicated support when you need it",
+              "Simple, intuitive interface that you can actually use",
+              "Powerful features without all the complexity",
+              "Your data is encrypted and secure with us",
+              "No hidden fees or surprise charges, ever",
+              "Works on all your devices, wherever you are",
+              "We're constantly improving based on what you tell us",
+              "Available in multiple languages so you can use it your way",
+              "Dedicated support when you need us, because we're here for you",
             ].map((feature, index) => (
               <div
                 key={index}
@@ -300,7 +300,7 @@ export default function About() {
               Ready to take control of your finances?
             </h2>
             <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-              Join thousands of users who are already managing their money better with MoneyDesk.
+              Join thousands of people who are already managing their money better with us. We'd love to have you join us.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
