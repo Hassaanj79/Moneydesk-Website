@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, ArrowRight, Clock, FileText, CheckCircle, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Toast } from "@/components/Toast";
 
 interface BlogPost {
   id: string;
@@ -25,6 +26,11 @@ export default function Blog() {
   const [subscribed, setSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "warning" | "info"; isVisible: boolean }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
 
   useEffect(() => {
     // Load blogs from API
@@ -70,13 +76,18 @@ export default function Blog() {
     }
   }, [selectedCategory, blogPosts]);
 
+  const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "info") => {
+    setToast({ message, type, isVisible: true });
+    setTimeout(() => setToast((prev) => ({ ...prev, isVisible: false })), 5000);
+  };
+
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || isSubmitting) return;
 
     const emailValue = email.toLowerCase().trim();
     if (!emailValue) {
-      alert("Please enter a valid email address");
+      showToast("Please enter a valid email address", "warning");
       return;
     }
 
@@ -103,9 +114,9 @@ export default function Blog() {
 
       if (!response.ok) {
         if (data.error && data.error.includes("already subscribed")) {
-          alert("This email is already subscribed!");
+          showToast("This email is already subscribed!", "warning");
         } else {
-          alert("Failed to subscribe. Please try again.");
+          showToast("Failed to subscribe. Please try again.", "error");
         }
         setIsSubmitting(false);
         return;
@@ -147,7 +158,7 @@ export default function Blog() {
     } catch (error) {
       console.error("❌ Error subscribing:", error);
       setIsSubmitting(false);
-      alert("Something went wrong. Please try again.");
+      showToast("Something went wrong. Please try again.", "error");
     }
   };
 
@@ -347,6 +358,14 @@ export default function Blog() {
         </div>
       </div>
     )}
+    
+    {/* Toast Notification */}
+    <Toast
+      message={toast.message}
+      type={toast.type}
+      isVisible={toast.isVisible}
+      onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+    />
     </>
   );
 }

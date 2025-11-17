@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, ThumbsUp, MessageSquare, Bug, Lightbulb, Filter, X, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { Toast } from "@/components/Toast";
 
 interface FeedbackSubmission {
   id: string;
@@ -45,6 +46,11 @@ export default function FeedbackPage() {
   const [showCommentForm, setShowCommentForm] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
   const [commentAuthor, setCommentAuthor] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "warning" | "info"; isVisible: boolean }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
 
   useEffect(() => {
     loadSubmissions();
@@ -111,17 +117,22 @@ export default function FeedbackPage() {
     return id;
   };
 
+  const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "info") => {
+    setToast({ message, type, isVisible: true });
+    setTimeout(() => setToast((prev) => ({ ...prev, isVisible: false })), 5000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.description.trim() || !formData.name.trim() || !formData.email.trim()) {
-      alert("Please fill in all fields");
+      showToast("Please fill in all fields", "warning");
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email.trim())) {
-      alert("Please enter a valid email address");
+      showToast("Please enter a valid email address", "warning");
       return;
     }
 
@@ -155,7 +166,7 @@ export default function FeedbackPage() {
         setFormData({ title: "", description: "", type: "enhancement", name: "", email: "" });
         setShowForm(false);
         setSubmitting(false);
-        alert("Thank you for your feedback! Your submission has been received.");
+        showToast("Thank you for your feedback! Your submission has been received.", "success");
         // Reload submissions to show the new one
         loadSubmissions();
       } else {
@@ -164,7 +175,7 @@ export default function FeedbackPage() {
     } catch (error) {
       console.error("Error submitting feedback:", error);
       setSubmitting(false);
-      alert("Failed to submit feedback. Please try again.");
+      showToast("Failed to submit feedback. Please try again.", "error");
     }
   };
 
@@ -210,7 +221,7 @@ export default function FeedbackPage() {
 
   const handleCommentSubmit = async (submissionId: string) => {
     if (!commentText.trim() || !commentAuthor.trim()) {
-      alert("Please enter your name and comment");
+      showToast("Please enter your name and comment", "warning");
       return;
     }
 
@@ -588,6 +599,15 @@ export default function FeedbackPage() {
             </div>
           )}
         </div>
+      </div>
+      
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Send, CheckCircle, MapPin, Clock } from "lucide-react";
+import { Toast } from "@/components/Toast";
 
 interface JobPosition {
   id: string;
@@ -26,6 +27,16 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
   });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "warning" | "info"; isVisible: boolean }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
+  
+  const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "info") => {
+    setToast({ message, type, isVisible: true });
+    setTimeout(() => setToast((prev) => ({ ...prev, isVisible: false })), 5000);
+  };
 
   useEffect(() => {
     // Handle both sync and async params
@@ -123,7 +134,7 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
       setFormData({ name: "", email: "", phone: "", coverLetter: "" });
     } catch (error) {
       console.error("Error submitting application:", error);
-      alert("Something went wrong. Please try again.");
+      showToast("Something went wrong. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -297,6 +308,14 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
           </>
         )}
       </div>
+      
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+      />
     </div>
   );
 }
