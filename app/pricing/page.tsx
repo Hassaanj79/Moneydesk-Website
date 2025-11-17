@@ -18,7 +18,12 @@ export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
 
-  const handleGetStarted = () => {
+  const handleGetStarted = (e?: React.MouseEvent) => {
+    // Prevent any default behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     // Show modal to choose plan
     setShowPlanModal(true);
   };
@@ -382,7 +387,8 @@ export default function Pricing() {
                 Join thousands of people who've taken control of their finances. Start your <strong>14-day free trial</strong>. You won't be charged until after the trial ends.
               </p>
               <button
-                onClick={handleGetStarted}
+                type="button"
+                onClick={(e) => handleGetStarted(e)}
                 className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1"
               >
                 Get Started Free
