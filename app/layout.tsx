@@ -65,19 +65,6 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <CookieConsent />
-        <Script id="crisp-chat" strategy="afterInteractive">
-          {`
-            window.$crisp=[];
-            window.CRISP_WEBSITE_ID="8e527626-9bc4-434d-a3cd-673f6d208d50";
-            (function(){
-              d=document;
-              s=d.createElement("script");
-              s.src="https://client.crisp.chat/l.js";
-              s.async=1;
-              d.getElementsByTagName("head")[0].appendChild(s);
-            })();
-          `}
-        </Script>
         <Analytics />
       </body>
     </html>

@@ -65,11 +65,11 @@ export default function About() {
               <Heart className="w-4 h-4" />
               About MoneyDesk
             </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              We're here to help you
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> take control</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-10 leading-tight pb-4">
+              <span className="block mb-2">We're here to help you</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600 pb-2">take control</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed mt-8 pt-2">
               Hi there! We're MoneyDesk, and we believe managing your money shouldn't be complicated, stressful, or expensive. That's why we built this for you.
             </p>
           </div>
