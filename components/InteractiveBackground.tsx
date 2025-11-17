@@ -47,7 +47,7 @@ export function InteractiveBackground() {
           top: mousePos.y - 200,
           width: 400,
           height: 400,
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 40%, transparent 70%)',
           borderRadius: '50%',
           opacity: mousePos.x > 0 && mousePos.y > 0 ? 1 : 0,
           transition: 'opacity 0.3s ease-out',
@@ -64,8 +64,8 @@ export function InteractiveBackground() {
         className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
+            linear-gradient(to right, rgba(245, 158, 11, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(245, 158, 11, 0.1) 1px, transparent 1px)
           `,
           backgroundSize: '50px 50px',
         }}

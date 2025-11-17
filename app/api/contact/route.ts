@@ -1,31 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateContactForm, escapeHtml } from "@/lib/security";
 
 const NOTIFICATION_EMAIL = "support@moneydesk.co";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, subject, message } = body;
-
-    if (!name || !email || !subject || !message) {
+    // Parse and validate request body
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Invalid JSON in request body" },
         { status: 400 }
       );
     }
 
+    // Validate and sanitize input
+    const validation = validateContactForm(body);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { error: validation.errors.join(", ") },
+        { status: 400 }
+      );
+    }
+
+    const { name, email, subject, message } = validation.sanitized!;
+
+    // Escape HTML to prevent XSS in email templates
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+
     // Email content
-    const emailSubject = `New Contact Form Submission: ${subject}`;
+    const emailSubject = `New Contact Form Submission: ${safeSubject}`;
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #2563eb;">New Contact Form Submission</h2>
         <p>A new message has been submitted through the MoneyDesk contact form.</p>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>Name:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> ${safeEmail}</p>
+          <p><strong>Subject:</strong> ${safeSubject}</p>
           <p><strong>Message:</strong></p>
-          <div style="background-color: white; padding: 15px; border-radius: 4px; margin-top: 10px; white-space: pre-wrap;">${message}</div>
+          <div style="background-color: white; padding: 15px; border-radius: 4px; margin-top: 10px; white-space: pre-wrap;">${safeMessage}</div>
           <p style="margin-top: 15px; color: #6b7280; font-size: 12px;">
             <strong>Submitted At:</strong> ${new Date().toLocaleString()}
           </p>

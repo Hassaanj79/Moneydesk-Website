@@ -1,18 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateNewsletterForm, escapeHtml } from "@/lib/security";
 
 const NOTIFICATION_EMAIL = "support@moneydesk.co";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, date, subscribedAt } = body;
-
-    if (!email) {
+    // Parse and validate request body
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
       return NextResponse.json(
-        { error: "Email is required" },
+        { error: "Invalid JSON in request body" },
         { status: 400 }
       );
     }
+
+    // Validate and sanitize input
+    const validation = validateNewsletterForm(body);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { error: validation.errors.join(", ") },
+        { status: 400 }
+      );
+    }
+
+    const { email, date, subscribedAt } = validation.sanitized!;
+
+    // Escape HTML to prevent XSS in email templates
+    const safeEmail = escapeHtml(email);
+    const safeDate = escapeHtml(date);
+    const safeSubscribedAt = escapeHtml(subscribedAt);
 
     // Email content
     const emailSubject = `New Newsletter Subscription: ${email}`;
@@ -21,8 +39,8 @@ export async function POST(request: NextRequest) {
         <h2 style="color: #2563eb;">New Newsletter Subscription</h2>
         <p>A new user has subscribed to the MoneyDesk newsletter.</p>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Subscription Date:</strong> ${date}</p>
+          <p><strong>Email:</strong> ${safeEmail}</p>
+          <p><strong>Subscription Date:</strong> ${safeDate}</p>
           <p><strong>Subscribed At:</strong> ${new Date(subscribedAt).toLocaleString()}</p>
         </div>
         <p style="color: #6b7280; font-size: 14px;">

@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function Pricing() {
   const [hoveredPlan, setHoveredPlan] = useState<number | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual" | "lifetime">("monthly");
+  const [hoveredFaqIndex, setHoveredFaqIndex] = useState<number | null>(null);
 
   const monthlyPlans = [
     {
@@ -71,6 +72,8 @@ export default function Pricing() {
       name: "Lifetime",
       price: "$499",
       period: "one-time",
+      originalPrice: "$1,438.80",
+      savings: "Save 65%",
       description: "Tired of monthly fees? One-time payment for lifetime access to the portal",
       features: [
         "Unlimited accounts",
@@ -225,7 +228,10 @@ export default function Pricing() {
                   </div>
                   {("originalPrice" in plan && plan.originalPrice) ? (
                     <p className="text-sm text-gray-500 line-through mb-1">
-                      {String(plan.originalPrice)} per year
+                      {plan.period === "one-time" 
+                        ? `${String(plan.originalPrice)} (vs 10 years monthly)`
+                        : `${String(plan.originalPrice)} per year`
+                      }
                     </p>
                   ) : null}
                   <p className="text-gray-600">{plan.description}</p>
@@ -281,18 +287,32 @@ export default function Pricing() {
                 q: "What if I want to cancel?",
                 a: "No problem at all. Cancel anytime from your account settings. You'll keep access until the end of your billing period. No questions asked.",
               },
-            ].map((faq, index) => (
-              <div 
-                key={index} 
-                className="group bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-6 hover:border-primary-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
-              >
-                <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors flex items-center gap-2">
-                  <span className="text-primary-500">•</span>
-                  {faq.q}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
+            ].map((faq, index) => {
+              const isHovered = hoveredFaqIndex === index;
+              
+              return (
+                <div 
+                  key={index} 
+                  className="group bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl overflow-hidden hover:border-primary-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  onMouseEnter={() => setHoveredFaqIndex(index)}
+                  onMouseLeave={() => setHoveredFaqIndex(null)}
+                >
+                  <div className="p-6">
+                    <h3 className="font-bold text-gray-900 group-hover:text-primary-600 transition-colors flex items-center gap-2">
+                      <span className="text-primary-500">•</span>
+                      {faq.q}
+                    </h3>
+                    <div 
+                      className={`overflow-hidden transition-all duration-300 ${
+                        isHovered ? 'max-h-96 opacity-100 mt-3' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
