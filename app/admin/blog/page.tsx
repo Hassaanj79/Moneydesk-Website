@@ -46,6 +46,9 @@ export default function BlogAdmin() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [contactSubmissions, setContactSubmissions] = useState<ContactSubmission[]>([]);
+  const [isLoadingBlogs, setIsLoadingBlogs] = useState(false);
+  const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(false);
+  const [isLoadingContact, setIsLoadingContact] = useState(false);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [formData, setFormData] = useState({
@@ -99,6 +102,7 @@ export default function BlogAdmin() {
   };
 
   const loadBlogs = async () => {
+    setIsLoadingBlogs(true);
     try {
       const response = await fetch("/api/blogs");
       const data = await response.json();
@@ -112,15 +116,26 @@ export default function BlogAdmin() {
       if (storedBlogs) {
         setBlogs(JSON.parse(storedBlogs) as BlogPost[]);
       }
+    } finally {
+      setIsLoadingBlogs(false);
     }
   };
 
   const getExistingCategories = (): string[] => {
     const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean) as string[]);
+    // If editing, ensure the current blog's category is included
+    if (editingBlog && editingBlog.category && !categories.has(editingBlog.category)) {
+      categories.add(editingBlog.category);
+    }
+    // Also include the current formData category if it exists and is not in the list
+    if (formData.category && formData.category.trim() && !categories.has(formData.category)) {
+      categories.add(formData.category);
+    }
     return Array.from(categories).sort();
   };
 
   const loadSubscribers = async () => {
+    setIsLoadingSubscribers(true);
     try {
       const response = await fetch("/api/newsletter/subscribers");
       const data = await response.json();
@@ -138,10 +153,13 @@ export default function BlogAdmin() {
         );
         setSubscribers(subs);
       }
+    } finally {
+      setIsLoadingSubscribers(false);
     }
   };
 
   const loadContactSubmissions = async () => {
+    setIsLoadingContact(true);
     try {
       const response = await fetch("/api/contact/submissions");
       const data = await response.json();
@@ -159,6 +177,8 @@ export default function BlogAdmin() {
         );
         setContactSubmissions(subs);
       }
+    } finally {
+      setIsLoadingContact(false);
     }
   };
 
@@ -236,13 +256,36 @@ export default function BlogAdmin() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+      // Reduced to 2MB to prevent database issues (base64 encoding increases size by ~33%)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image size should be less than 2MB. Please compress your image or use a smaller file.");
         return;
       }
+      
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
+        return;
+      }
+      
       const reader = new FileReader();
+      reader.onerror = () => {
+        alert("Error reading image file. Please try again.");
+      };
       reader.onloadend = () => {
-        setFormData({ ...formData, coverPhoto: reader.result as string });
+        const result = reader.result as string;
+        if (result && result.length > 0) {
+          // Check if base64 string is reasonable size (should be ~33% larger than original)
+          const base64Size = result.length;
+          if (base64Size > 3 * 1024 * 1024) { // 3MB base64 string
+            alert("Image is too large after encoding. Please use a smaller image (max 2MB file size).");
+            return;
+          }
+          setFormData({ ...formData, coverPhoto: result });
+        } else {
+          alert("Failed to read image. Please try again.");
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -455,6 +498,12 @@ export default function BlogAdmin() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate category
+    if (!formData.category || !formData.category.trim()) {
+      alert("Please select or create a category for the blog post.");
+      return;
+    }
+    
     // Get final content from editor
     const finalContent = contentRef.current?.innerHTML || formData.content;
     
@@ -466,7 +515,7 @@ export default function BlogAdmin() {
       author: formData.author,
       date: editingBlog?.date || new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
       readTime: calculateReadTime(contentRef.current?.innerText || finalContent),
-      category: formData.category,
+      category: formData.category.trim(),
       published: formData.published,
       coverPhoto: formData.coverPhoto || undefined,
     };
@@ -481,23 +530,28 @@ export default function BlogAdmin() {
 
       const data = await response.json();
 
-      if (data.success) {
-        // Update local state
-        let updatedBlogs;
-        if (editingBlog) {
-          updatedBlogs = blogs.map((b) => (b.id === editingBlog.id ? blogPost : b));
-        } else {
-          updatedBlogs = [...blogs, blogPost];
-        }
-        setBlogs(updatedBlogs);
-        resetForm();
-        alert("Blog saved successfully!");
-      } else {
-        throw new Error(data.error || "Failed to save blog");
+      if (!response.ok || !data.success) {
+        // Show the actual error message from the API
+        const errorMessage = data.error || `HTTP ${response.status}: ${response.statusText}` || "Failed to save blog";
+        console.error("API Error:", errorMessage, data);
+        alert(`Error: ${errorMessage}\n\nPlease check:\n1. Database connection\n2. Image size (max 2MB)\n3. All required fields are filled\n\nCheck browser console for details.`);
+        return;
       }
-    } catch (error) {
+
+      // Update local state
+      let updatedBlogs;
+      if (editingBlog) {
+        updatedBlogs = blogs.map((b) => (b.id === editingBlog.id ? blogPost : b));
+      } else {
+        updatedBlogs = [...blogs, blogPost];
+      }
+      setBlogs(updatedBlogs);
+      resetForm();
+      alert("Blog saved successfully!");
+    } catch (error: any) {
       console.error("Error saving blog:", error);
-      alert("Failed to save blog. Please try again.");
+      const errorMessage = error.message || "Failed to save blog. Please try again.";
+      alert(`Error: ${errorMessage}\n\nPlease check:\n1. Database connection\n2. Network connection\n3. Browser console for details.`);
     }
   };
 
@@ -515,7 +569,7 @@ export default function BlogAdmin() {
       excerpt: blog.excerpt,
       content: blog.content,
       author: blog.author,
-      category: blog.category,
+      category: blog.category || "",
       published: blog.published,
       coverPhoto: blog.coverPhoto || "",
     });
@@ -806,7 +860,7 @@ export default function BlogAdmin() {
                       <p className="mb-2 text-sm text-gray-500">
                         <span className="font-semibold">Click to upload</span> or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500">PNG, JPG or GIF (MAX. 5MB)</p>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF or WebP (MAX. 2MB)</p>
                     </div>
                     <input
                       type="file"
@@ -839,17 +893,20 @@ export default function BlogAdmin() {
                     {!showNewCategoryInput ? (
                       <div className="flex gap-2">
                         <select
-                          value={formData.category}
+                          value={formData.category || ""}
                           onChange={(e) => {
-                            if (e.target.value === "__new__") {
+                            const selectedValue = e.target.value;
+                            if (selectedValue === "__new__") {
                               setShowNewCategoryInput(true);
                               setFormData({ ...formData, category: "" });
+                            } else if (selectedValue) {
+                              setFormData({ ...formData, category: selectedValue.trim() });
                             } else {
-                              setFormData({ ...formData, category: e.target.value });
+                              setFormData({ ...formData, category: "" });
                             }
                           }}
                           className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
-                          required
+                          required={!formData.category}
                         >
                           <option value="">Select a category</option>
                           {getExistingCategories().map((cat) => (
@@ -1176,7 +1233,9 @@ export default function BlogAdmin() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Mail className="w-6 h-6 text-primary-600" />
-              <h2 className="text-2xl font-bold text-gray-900">Newsletter Subscribers ({subscribers.length})</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Newsletter Subscribers ({isLoadingSubscribers ? '...' : subscribers.length})
+              </h2>
             </div>
             {subscribers.length > 0 && (
               <button
@@ -1189,7 +1248,11 @@ export default function BlogAdmin() {
             )}
           </div>
           
-          {subscribers.length === 0 ? (
+          {isLoadingSubscribers ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : subscribers.length === 0 ? (
             <div className="text-center py-12">
               <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-500">No newsletter subscribers yet.</p>
@@ -1227,7 +1290,9 @@ export default function BlogAdmin() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <MessageSquare className="w-6 h-6 text-primary-600" />
-              <h2 className="text-2xl font-bold text-gray-900">Contact Form Submissions ({contactSubmissions.length})</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Contact Form Submissions ({isLoadingContact ? '...' : contactSubmissions.length})
+              </h2>
             </div>
             {contactSubmissions.length > 0 && (
               <button
@@ -1240,7 +1305,11 @@ export default function BlogAdmin() {
             )}
           </div>
           
-          {contactSubmissions.length === 0 ? (
+          {isLoadingContact ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : contactSubmissions.length === 0 ? (
             <div className="text-center py-12">
               <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-500">No contact form submissions yet.</p>
@@ -1291,9 +1360,15 @@ export default function BlogAdmin() {
 
         {/* Blog List */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">All Blog Posts ({blogs.length})</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            All Blog Posts ({isLoadingBlogs ? '...' : blogs.length})
+          </h2>
           
-          {blogs.length === 0 ? (
+          {isLoadingBlogs ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : blogs.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 mb-4">No blog posts yet. Create your first blog post!</p>
               <button

@@ -7,7 +7,8 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = {
   windowMs: 15 * 60 * 1000, // 15 minutes
   maxRequests: 100, // Max requests per window
-  apiMaxRequests: 20, // Max API requests per window
+  apiMaxRequests: 20, // Max API requests per window (production)
+  apiMaxRequestsDev: 200, // Max API requests per window (development/localhost)
 };
 
 function getRateLimitKey(request: NextRequest): string {
@@ -16,9 +17,12 @@ function getRateLimitKey(request: NextRequest): string {
   return ip;
 }
 
-function checkRateLimit(key: string, isApi: boolean): boolean {
+function checkRateLimit(key: string, isApi: boolean, isLocalhost: boolean): boolean {
   const now = Date.now();
-  const limit = isApi ? RATE_LIMIT.apiMaxRequests : RATE_LIMIT.maxRequests;
+  // Use higher limit for localhost/development
+  const limit = isApi 
+    ? (isLocalhost ? RATE_LIMIT.apiMaxRequestsDev : RATE_LIMIT.apiMaxRequests)
+    : RATE_LIMIT.maxRequests;
   
   const record = rateLimitMap.get(key);
   
@@ -52,13 +56,26 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isApiRoute = pathname.startsWith('/api/');
   
-  // Rate limiting
-  const rateLimitKey = getRateLimitKey(request);
-  if (!checkRateLimit(rateLimitKey, isApiRoute)) {
-    return NextResponse.json(
-      { error: 'Too many requests. Please try again later.' },
-      { status: 429 }
-    );
+  // Check if request is from localhost (development)
+  const hostname = request.headers.get('host') || '';
+  const isLocalhost = hostname.includes('localhost') || hostname.includes('127.0.0.1') || process.env.NODE_ENV === 'development';
+  
+  // Skip rate limiting for admin routes (they're authenticated)
+  const isAdminRoute = pathname.startsWith('/api/blogs') || 
+                       pathname.startsWith('/api/jobs') || 
+                       pathname.startsWith('/api/feedback') ||
+                       pathname.startsWith('/api/contact/submissions') ||
+                       pathname.startsWith('/api/newsletter/subscribers');
+  
+  // Rate limiting (more lenient for localhost, skip for admin routes)
+  if (!isAdminRoute) {
+    const rateLimitKey = getRateLimitKey(request);
+    if (!checkRateLimit(rateLimitKey, isApiRoute, isLocalhost)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 }
+      );
+    }
   }
   
   // Security headers (additional ones not covered by next.config.js)

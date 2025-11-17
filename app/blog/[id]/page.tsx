@@ -20,10 +20,12 @@ interface BlogPost {
 export default function BlogDetail({ params }: { params: { id: string } }) {
   const [blog, setBlog] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Load blog from API
     const loadBlog = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/blogs/${params.id}`);
         const data = await response.json();
@@ -63,10 +65,20 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
             setRelatedPosts(related);
           }
         }
+      } finally {
+        setIsLoading(false);
       }
     };
     loadBlog();
   }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <div className="pt-16 pb-20 min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!blog) {
     return (

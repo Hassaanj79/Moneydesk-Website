@@ -25,6 +25,7 @@ export default function Blog() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "warning" | "info"; isVisible: boolean }>({
     message: "",
@@ -35,6 +36,7 @@ export default function Blog() {
   useEffect(() => {
     // Load blogs from API
     const loadBlogs = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/blogs?published=true");
         const data = await response.json();
@@ -60,6 +62,8 @@ export default function Blog() {
           setBlogPosts(publishedBlogs);
           setFilteredPosts(publishedBlogs);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
     loadBlogs();
@@ -198,7 +202,11 @@ export default function Blog() {
 
       {/* Blog Posts */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        {filteredPosts.length === 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : filteredPosts.length === 0 ? (
           <div className="text-center py-20">
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-gray-900 mb-2">No posts found</h3>

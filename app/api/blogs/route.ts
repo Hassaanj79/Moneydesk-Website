@@ -81,6 +81,16 @@ export async function POST(request: NextRequest) {
         cover_photo = VALUES(cover_photo)
     `;
 
+    // Validate cover photo size if provided
+    if (coverPhoto) {
+      const base64Size = coverPhoto.length;
+      // Base64 encoding increases size by ~33%, so check if it's reasonable
+      // LONGTEXT can hold up to 4GB, but we'll warn if it's very large
+      if (base64Size > 10 * 1024 * 1024) { // 10MB base64 string
+        console.warn(`Large cover photo detected: ${Math.round(base64Size / 1024)}KB`);
+      }
+    }
+
     await query(sql, [
       id,
       title,
@@ -95,10 +105,36 @@ export async function POST(request: NextRequest) {
     ]);
 
     return NextResponse.json({ success: true, message: "Blog saved successfully" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving blog:", error);
+    console.error("Error details:", {
+      code: error.code,
+      errno: error.errno,
+      sqlState: error.sqlState,
+      sqlMessage: error.sqlMessage,
+      message: error.message,
+    });
+    
+    // Check if it's a data truncation error
+    if (error.code === 'ER_DATA_TOO_LONG' || error.message?.includes('Data too long') || error.sqlMessage?.includes('Data too long')) {
+      return NextResponse.json(
+        { error: "Cover photo is too large. Please use a smaller image (max 2MB recommended). If you haven't run the database migration, please run: ALTER TABLE blogs MODIFY COLUMN cover_photo LONGTEXT;" },
+        { status: 400 }
+      );
+    }
+    
+    // Check for database connection errors
+    if (error.code === 'ECONNREFUSED' || error.code === 'ER_ACCESS_DENIED_ERROR') {
+      return NextResponse.json(
+        { error: "Database connection failed. Please check your database configuration." },
+        { status: 500 }
+      );
+    }
+    
+    // Return detailed error message
+    const errorMessage = error.sqlMessage || error.message || "Failed to save blog";
     return NextResponse.json(
-      { error: "Failed to save blog" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
