@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download, MessageSquare, Bold, Italic, Underline, Link as LinkIcon, Heading1, Heading2, Heading3, List, AlignLeft } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download, MessageSquare, Bold, Italic, Underline, Link as LinkIcon, Heading1, Heading2, Heading3, List, AlignLeft, FileText, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import mammoth from "mammoth";
 
 interface BlogPost {
   id: string;
@@ -58,7 +59,11 @@ export default function BlogAdmin() {
   });
   const [newCategory, setNewCategory] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [documentPreview, setDocumentPreview] = useState<string>("");
+  const [showPreview, setShowPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const documentInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // Check authentication
@@ -490,6 +495,8 @@ export default function BlogAdmin() {
     });
     setShowNewCategoryInput(false);
     setNewCategory("");
+    setDocumentPreview("");
+    setShowPreview(false);
     if (contentRef.current) {
       contentRef.current.innerHTML = "";
     }
@@ -498,6 +505,82 @@ export default function BlogAdmin() {
   const handleNewBlog = () => {
     resetForm();
     setShowEditor(true);
+  };
+
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/msword', // .doc
+      'application/vnd.ms-word.document.macroEnabled.12', // .docm
+    ];
+
+    if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.docx') && !file.name.toLowerCase().endsWith('.doc')) {
+      alert('Please upload a Word document (.docx or .doc)');
+      return;
+    }
+
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      
+      // Convert images to base64
+      const imageOptions = {
+        convertImage: mammoth.images.imgElement((image) => {
+          return image.read("base64").then((imageBuffer: any) => {
+            return {
+              src: `data:${image.contentType};base64,${imageBuffer}`
+            };
+          }).catch((error: any) => {
+            console.error('Error reading image:', error);
+            return { src: '' };
+          });
+        })
+      };
+
+      // Convert document to HTML
+      const result = await mammoth.convertToHtml({ arrayBuffer }, imageOptions);
+      const html = result.value;
+      const messages = result.messages;
+
+      // Show warnings if any
+      if (messages.length > 0) {
+        console.warn('Document conversion warnings:', messages);
+      }
+
+      // Set preview
+      setDocumentPreview(html);
+      setShowPreview(true);
+
+      // Insert into editor
+      if (contentRef.current) {
+        const currentContent = contentRef.current.innerHTML || '';
+        const newContent = currentContent ? `${currentContent}<br><br>${html}` : html;
+        contentRef.current.innerHTML = newContent;
+        updateContent();
+      }
+
+      alert('Document uploaded successfully! Check the preview and editor.');
+    } catch (error) {
+      console.error('Error parsing document:', error);
+      alert('Error parsing document. Please make sure it\'s a valid Word document.');
+    } finally {
+      setIsUploading(false);
+      // Reset input
+      if (documentInputRef.current) {
+        documentInputRef.current.value = '';
+      }
+    }
   };
 
   if (!isAuthenticated) {
@@ -783,9 +866,51 @@ export default function BlogAdmin() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Content *
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Content *
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={documentInputRef}
+                      type="file"
+                      accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={handleDocumentUpload}
+                      className="hidden"
+                      id="document-upload"
+                    />
+                    <label
+                      htmlFor="document-upload"
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
+                        isUploading
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-primary-100 text-primary-600 hover:bg-primary-200'
+                      }`}
+                    >
+                      {isUploading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4" />
+                          Upload Document
+                        </>
+                      )}
+                    </label>
+                    {documentPreview && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPreview(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-600 rounded-lg font-semibold hover:bg-green-200 transition-all"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Preview
+                      </button>
+                    )}
+                  </div>
+                </div>
                 
                 {/* Formatting Toolbar */}
                 <div className="flex flex-wrap items-center gap-2 p-3 bg-gray-50 border-2 border-b-0 border-gray-200 rounded-t-xl">
@@ -1152,6 +1277,56 @@ export default function BlogAdmin() {
           )}
         </div>
       </div>
+
+      {/* Document Preview Modal */}
+      {showPreview && documentPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <FileText className="w-6 h-6 text-primary-600" />
+                <h2 className="text-2xl font-bold text-gray-900">Document Preview</h2>
+              </div>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              <div
+                className="prose prose-lg max-w-none blog-content"
+                dangerouslySetInnerHTML={{ __html: documentPreview }}
+                style={{
+                  direction: 'ltr',
+                  textAlign: 'left'
+                }}
+              />
+            </div>
+            <div className="flex items-center justify-end gap-4 p-6 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  if (contentRef.current) {
+                    contentRef.current.innerHTML = documentPreview;
+                    updateContent();
+                  }
+                  setShowPreview(false);
+                }}
+                className="px-6 py-2 bg-primary-500 text-white rounded-xl font-semibold hover:bg-primary-600 transition-colors"
+              >
+                Use This Content
+              </button>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="px-6 py-2 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

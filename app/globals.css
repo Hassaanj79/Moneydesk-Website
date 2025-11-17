@@ -422,8 +422,24 @@ h1, h2, h3, h4, h5, h6 {
   display: inline;
 }
 
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 .blog-content * {
   direction: ltr !important;
   text-align: left !important;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
