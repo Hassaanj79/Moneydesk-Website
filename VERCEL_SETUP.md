@@ -4,6 +4,10 @@
 
 Your deployment is failing because **environment variables are not set in Vercel**.
 
+**Current Error:** All environment variables show as "✗ Missing" - this means they're not configured in Vercel.
+
+**Quick Fix:** See [QUICK_FIX.md](./QUICK_FIX.md) for step-by-step instructions.
+
 ## Step-by-Step Setup
 
 ### 1. Set Environment Variables in Vercel
