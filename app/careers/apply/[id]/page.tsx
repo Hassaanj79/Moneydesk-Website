@@ -73,9 +73,11 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
     setIsSubmitting(true);
 
     try {
+      // Generate a more unique ID to avoid collisions
+      const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       // Create new application
       const newApplication = {
-        id: Date.now().toString(),
+        id: uniqueId,
         positionId: job.id,
         name: formData.name,
         email: formData.email,

@@ -96,8 +96,21 @@ export async function POST(request: NextRequest) {
       submittedAt,
     } = body;
 
+    // Use INSERT ... ON DUPLICATE KEY UPDATE to handle duplicate IDs
+    // This can happen if two submissions happen at the exact same millisecond
     await query(
-      "INSERT INTO feedback_submissions (id, title, description, type, status, submitted_by, submitted_by_name, submitted_by_email, date, submitted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      `INSERT INTO feedback_submissions (id, title, description, type, status, submitted_by, submitted_by_name, submitted_by_email, date, submitted_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         title = VALUES(title),
+         description = VALUES(description),
+         type = VALUES(type),
+         status = VALUES(status),
+         submitted_by = VALUES(submitted_by),
+         submitted_by_name = VALUES(submitted_by_name),
+         submitted_by_email = VALUES(submitted_by_email),
+         date = VALUES(date),
+         submitted_at = VALUES(submitted_at)`,
       [
         id,
         title,
@@ -113,10 +126,20 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json({ success: true, message: "Feedback submitted successfully" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving feedback submission:", error);
+    console.error("Error details:", {
+      message: error?.message,
+      code: error?.code,
+      sqlState: error?.sqlState,
+      errno: error?.errno,
+    });
     return NextResponse.json(
-      { error: "Failed to save feedback submission" },
+      { 
+        error: "Failed to save feedback submission",
+        details: error?.message || "Unknown error",
+        code: error?.code,
+      },
       { status: 500 }
     );
   }

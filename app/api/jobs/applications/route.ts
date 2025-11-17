@@ -58,7 +58,17 @@ export async function POST(request: NextRequest) {
     const { id, positionId, name, email, phone, resumeUrl, coverLetter, date, appliedAt } = body;
 
     await query(
-      "INSERT INTO job_applications (id, position_id, name, email, phone, resume_url, cover_letter, date, applied_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      `INSERT INTO job_applications (id, position_id, name, email, phone, resume_url, cover_letter, date, applied_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         position_id = VALUES(position_id),
+         name = VALUES(name),
+         email = VALUES(email),
+         phone = VALUES(phone),
+         resume_url = VALUES(resume_url),
+         cover_letter = VALUES(cover_letter),
+         date = VALUES(date),
+         applied_at = VALUES(applied_at)`,
       [
         id,
         positionId,

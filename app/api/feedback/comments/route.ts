@@ -15,7 +15,13 @@ export async function POST(request: NextRequest) {
     }
 
     await query(
-      "INSERT INTO feedback_comments (id, submission_id, author, content, date, submitted_at) VALUES (?, ?, ?, ?, ?, ?)",
+      `INSERT INTO feedback_comments (id, submission_id, author, content, date, submitted_at) 
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         author = VALUES(author),
+         content = VALUES(content),
+         date = VALUES(date),
+         submitted_at = VALUES(submitted_at)`,
       [id, submissionId, author, content, date, submittedAt || new Date().toISOString()]
     );
 

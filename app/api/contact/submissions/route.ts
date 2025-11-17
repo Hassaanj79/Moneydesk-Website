@@ -35,7 +35,15 @@ export async function POST(request: NextRequest) {
     const { id, name, email, subject, message, date, submittedAt } = body;
 
     await query(
-      "INSERT INTO contact_submissions (id, name, email, subject, message, date, submitted_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      `INSERT INTO contact_submissions (id, name, email, subject, message, date, submitted_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         name = VALUES(name),
+         email = VALUES(email),
+         subject = VALUES(subject),
+         message = VALUES(message),
+         date = VALUES(date),
+         submitted_at = VALUES(submitted_at)`,
       [id, name, email, subject, message, date, submittedAt || new Date().toISOString()]
     );
 

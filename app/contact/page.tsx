@@ -16,8 +16,10 @@ export default function Contact() {
     e.preventDefault();
     
     try {
+      // Generate a more unique ID to avoid collisions
+      const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const submission = {
-        id: Date.now().toString(),
+        id: uniqueId,
         name: formData.name,
         email: formData.email,
         subject: formData.subject,

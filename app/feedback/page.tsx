@@ -128,8 +128,10 @@ export default function FeedbackPage() {
     setSubmitting(true);
 
     try {
+      // Generate a more unique ID to avoid collisions
+      const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const newSubmission = {
-        id: Date.now().toString(),
+        id: uniqueId,
         title: formData.title.trim(),
         description: formData.description.trim(),
         type: formData.type,
@@ -213,8 +215,10 @@ export default function FeedbackPage() {
     }
 
     try {
+      // Generate a more unique ID to avoid collisions
+      const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const newComment = {
-        id: Date.now().toString(),
+        id: uniqueId,
         submissionId,
         author: commentAuthor.trim(),
         content: commentText.trim(),
@@ -241,8 +245,9 @@ export default function FeedbackPage() {
     } catch (error) {
       console.error("Error adding comment:", error);
       // Fallback to localStorage update
+      const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const newComment: Comment = {
-        id: Date.now().toString(),
+        id: uniqueId,
         author: commentAuthor.trim(),
         content: commentText.trim(),
         submittedAt: new Date().toISOString(),
