@@ -24,8 +24,14 @@ export default function Pricing() {
       e.preventDefault();
       e.stopPropagation();
     }
-    // Show modal to choose plan
-    setShowPlanModal(true);
+    // Scroll to pricing plans section
+    const plansSection = document.getElementById('pricing-plans');
+    if (plansSection) {
+      plansSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // If section not found, show modal as fallback
+      setShowPlanModal(true);
+    }
   };
 
   const handlePlanSelection = (planType: "monthly" | "annual") => {
@@ -229,7 +235,7 @@ export default function Pricing() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="relative grid gap-8 mb-12 transition-all duration-500 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto">
+        <div id="pricing-plans" className="relative grid gap-8 mb-12 transition-all duration-500 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto">
           {currentPlans.map((plan, index) => (
             <div
               key={index}
