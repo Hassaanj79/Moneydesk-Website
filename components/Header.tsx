@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -35,16 +37,25 @@ export function Header() {
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center space-x-6 absolute left-1/2 transform -translate-x-1/2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-700 hover:text-primary-500 transition-all font-medium relative group py-2"
-              >
-                {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`transition-all font-medium relative group py-2 ${
+                    isActive 
+                      ? "text-primary-600" 
+                      : "text-gray-700 hover:text-primary-500"
+                  }`}
+                >
+                  {item.label}
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-primary-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}></span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right Side Buttons */}
@@ -79,17 +90,24 @@ export function Header() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-4 animate-slide-up">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block text-gray-700 hover:text-primary-500 transition-all duration-300 transform hover:translate-x-2"
-                onClick={() => setMobileMenuOpen(false)}
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item, index) => {
+              const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`block transition-all duration-300 transform hover:translate-x-2 ${
+                    isActive 
+                      ? "text-primary-600 font-semibold border-l-4 border-primary-500 pl-3" 
+                      : "text-gray-700 hover:text-primary-500"
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <div className="pt-4 space-y-2 border-t">
               <Link
                 href="https://app.moneydesk.co/login"

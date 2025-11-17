@@ -22,17 +22,17 @@ export default function Features() {
         {
           icon: CreditCard,
           title: "Transaction Tracking",
-          description: "Record and categorize all your income and expenses with ease. Support for multiple accounts and currencies.",
+          description: "Log every transaction in seconds. Whether it's a coffee, a paycheck, or that impulse buy, MoneyDesk helps you categorize it automatically so you always know where your money's going.",
         },
         {
           icon: Calendar,
           title: "Recurring Transactions",
-          description: "Set up automatic recurring transactions for subscriptions, bills, and regular income.",
+          description: "Stop manually entering the same bills every month. Set up recurring transactions for Netflix, rent, utilities, or anything that repeats. One setup, done forever.",
         },
         {
           icon: Bell,
           title: "Smart Notifications",
-          description: "Get alerts for upcoming bills, budget limits, and important financial milestones.",
+          description: "Get helpful reminders before bills are due, when you're close to budget limits, or when you hit a savings milestone. We'll keep you informed without being annoying.",
         },
       ],
     },
@@ -42,17 +42,17 @@ export default function Features() {
         {
           icon: Target,
           title: "Budget Creation",
-          description: "Create custom budgets for different categories and time periods. Track your spending against your limits.",
+          description: "Build budgets that match how you actually spend. Create separate budgets for groceries, entertainment, or whatever makes sense for your life. Then watch how you're doing in real-time.",
         },
         {
           icon: TrendingUp,
           title: "Spending Analysis",
-          description: "Analyze your spending patterns with detailed reports and visualizations to identify areas for improvement.",
+          description: "See the big picture with beautiful charts and reports. Spot trends, find problem areas, and discover where you can save more. No finance degree required.",
         },
         {
           icon: BarChart3,
           title: "Financial Reports",
-          description: "Generate comprehensive reports on your income, expenses, and financial health over time.",
+          description: "Generate detailed reports on your income, expenses, and overall financial health. Perfect for tax season, financial planning, or just understanding your money better.",
         },
       ],
     },
@@ -62,27 +62,33 @@ export default function Features() {
         {
           icon: Shield,
           title: "Loan Management",
-          description: "Track loans, calculate interest (fixed or percentage), manage installments, and monitor repayment schedules.",
+          description: "Keep all your loans organized in one place. Track student loans, car payments, credit cards. See what you owe, when it's due, and how much interest is really costing you.",
         },
         {
           icon: Target,
           title: "Savings Goals",
-          description: "Set and track savings goals with automatic progress monitoring and milestone celebrations.",
+          description: "Set goals for anything: emergency fund, vacation, down payment, or that thing you've been dreaming about. Watch your progress grow and celebrate the wins along the way.",
         },
         {
           icon: Sparkles,
           title: "AI-Powered Insights",
-          description: "Get personalized financial advice and insights powered by artificial intelligence to optimize your finances.",
+          description: "Our AI analyzes your spending patterns and gives you personalized tips. Maybe you're spending too much on takeout, or you could save more by adjusting a few habits. We'll help you see it.",
         },
         {
           icon: Globe,
           title: "Multi-Currency Support",
-          description: "Manage finances in multiple currencies with automatic conversion and exchange rate tracking.",
+          description: "Traveling or living abroad? Manage money in multiple currencies with automatic conversion. See everything in your preferred currency, even if you're spending in others.",
         },
         {
           icon: Languages,
           title: "Multi-Language Support",
-          description: "Use MoneyDesk in your preferred language. Available in English, Spanish, French, German, and more.",
+          description: "MoneyDesk works in your language. Whether you speak English, Spanish, French, German, or more, we've got you covered. Financial management shouldn't have language barriers.",
+        },
+        {
+          icon: Calendar,
+          title: "Google Calendar Integration",
+          description: "Never miss a bill payment again. Sync your financial events, bill reminders, and payment due dates directly with your Google Calendar so everything's in one place.",
+          upcoming: true,
         },
       ],
     },
@@ -91,13 +97,7 @@ export default function Features() {
   return (
     <div className="pt-16 overflow-hidden">
       {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-br from-primary-50 via-white to-secondary/5 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl animate-pulse-slow animate-float"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl animate-pulse-slow delay-1000" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-100/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-        </div>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 overflow-hidden">
         
         <div className={`relative text-center mb-16 transition-all duration-1000 ease-out ${
           heroAnimation.isVisible || isVisible 
@@ -107,14 +107,14 @@ export default function Features() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-accent/30 to-success/20 text-success-dark rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-success/30 shadow-lg">
             <Sparkles className="w-4 h-4" />
             <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
-            Comprehensive Financial Management
+            Everything you need, nothing you don't
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Powerful features for
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> better finances</span>
+            Features that make managing money
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> actually easy</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Everything you need to take control of your money, all in one intuitive platform.
+            We've packed MoneyDesk with everything you need to master your finances, without the complexity. Here's what you get.
           </p>
         </div>
 
@@ -162,13 +162,22 @@ export default function Features() {
                   return (
                     <div
                       key={index}
-                      className={`group relative bg-white/80 backdrop-blur-sm border-2 ${colorScheme.border} rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden ${
+                      className={`group relative bg-white/80 backdrop-blur-sm border-2 ${colorScheme.border} rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${
                         categoryAnimation.isVisible || isVisible 
                           ? 'opacity-100 translate-y-0 scale-100' 
                           : 'opacity-0 translate-y-8 scale-95'
                       }`}
-                      style={{ transitionDelay: `${index * 100}ms` }}
+                      style={{ transitionDelay: `${index * 100}ms`, overflow: "visible" }}
                     >
+                      {/* Upcoming Badge */}
+                      {"upcoming" in feature && feature.upcoming && (
+                        <div className="absolute -top-3 right-4 z-20">
+                          <span className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg whitespace-nowrap">
+                            Upcoming
+                          </span>
+                        </div>
+                      )}
+                      
                       {/* Gradient overlay */}
                       <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 via-accent-50/0 to-success-50/0 group-hover:from-primary-50/30 group-hover:via-accent-50/20 group-hover:to-success-50/30 rounded-2xl transition-all duration-500"></div>
                       
@@ -209,12 +218,12 @@ export default function Features() {
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 leading-tight transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '300ms' }}>
-              Ready to experience these features?
+              Ready to try it yourself?
             </h2>
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              Start your free trial today and see how MoneyDesk can transform your financial management.
+              See why thousands of people trust MoneyDesk to manage their money. Start your free 14-day trial. No credit card required.
             </p>
             <a
               href="https://app.moneydesk.co/signup"

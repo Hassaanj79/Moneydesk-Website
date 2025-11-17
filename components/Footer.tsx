@@ -43,7 +43,7 @@ export function Footer() {
               <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">MoneyDesk</span>
             </Link>
             <p className="text-sm text-gray-600 mb-4">
-              Personal finance management made simple.
+              The personal finance app that helps you understand where your money goes and take control of your financial future.
             </p>
             <div className="flex space-x-4">
               <a 

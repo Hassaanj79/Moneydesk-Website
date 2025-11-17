@@ -90,7 +90,7 @@ export default function Security() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Account Deletion</h3>
               <p className="text-gray-700 leading-relaxed">
                 Should you choose to delete your MoneyDesk account, all of your financial data is completely and 
-                irreversibly removed from our database. We do not simply mark your account as inactive—we completely 
+                irreversibly removed from our database. We do not simply mark your account as inactive. We completely 
                 destroy all account data. (To be clear, you explicitly request this deletion. If you happen to let 
                 your account lapse accidentally, we don't assume you mean to delete all your data.)
               </p>

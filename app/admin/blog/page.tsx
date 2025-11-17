@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download, MessageSquare } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Eye, X, Mail, Download, MessageSquare, Bold, Italic, Underline, Link as LinkIcon, Heading1, Heading2, Heading3, List, AlignLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +15,7 @@ interface BlogPost {
   readTime: string;
   category: string;
   published: boolean;
+  coverPhoto?: string;
 }
 
 interface NewsletterSubscriber {
@@ -53,7 +54,11 @@ export default function BlogAdmin() {
     author: "",
     category: "",
     published: false,
+    coverPhoto: "",
   });
+  const [newCategory, setNewCategory] = useState("");
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check authentication
@@ -70,6 +75,7 @@ export default function BlogAdmin() {
       sessionStorage.removeItem("blogAdminEmail");
     }
   }, []);
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +98,16 @@ export default function BlogAdmin() {
     if (storedBlogs) {
       setBlogs(JSON.parse(storedBlogs));
     }
+  };
+
+  const getExistingCategories = (): string[] => {
+    const storedBlogs = localStorage.getItem("moneydesk_blogs");
+    if (storedBlogs) {
+      const blogs = JSON.parse(storedBlogs);
+      const categories = new Set(blogs.map((blog: BlogPost) => blog.category).filter(Boolean));
+      return Array.from(categories).sort();
+    }
+    return [];
   };
 
   const loadSubscribers = () => {
@@ -174,19 +190,242 @@ export default function BlogAdmin() {
     setBlogs(updatedBlogs);
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image size should be less than 5MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, coverPhoto: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateContent = () => {
+    if (contentRef.current) {
+      const htmlContent = contentRef.current.innerHTML;
+      setFormData({ ...formData, content: htmlContent });
+    }
+  };
+
+  const handleFormat = (command: string, value?: string) => {
+    if (contentRef.current) {
+      contentRef.current.focus();
+    }
+    
+    // For formatBlock, we need to ensure selection exists
+    if (command === "formatBlock" && value) {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) {
+        // If no selection, create a paragraph first
+        if (contentRef.current) {
+          const p = document.createElement(value);
+          p.textContent = "Heading";
+          contentRef.current.appendChild(p);
+          const range = document.createRange();
+          range.selectNodeContents(p);
+          range.collapse(false);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+        }
+      }
+    }
+    
+    const success = document.execCommand(command, false, value);
+    if (!success && command === "formatBlock" && value) {
+      // Fallback: wrap selection in heading tag
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const heading = document.createElement(value);
+        try {
+          heading.appendChild(range.extractContents());
+          range.insertNode(heading);
+          selection.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(heading);
+          newRange.collapse(false);
+          selection.addRange(newRange);
+        } catch (e) {
+          console.error("Error applying heading:", e);
+        }
+      }
+    }
+    
+    updateContent();
+    if (contentRef.current) {
+      contentRef.current.focus();
+    }
+  };
+
+  const handleLink = () => {
+    if (!contentRef.current) return;
+
+    const selection = window.getSelection();
+    let range: Range | null = null;
+    let selectedText = "";
+    let existingUrl = "";
+    let isExistingLink = false;
+    let linkElement: HTMLAnchorElement | null = null;
+
+    // Get selection or create one at cursor position
+    if (selection && selection.rangeCount > 0) {
+      range = selection.getRangeAt(0);
+      selectedText = range.toString();
+      
+      // Check if selection is already a link
+      const parentElement = range.commonAncestorContainer.parentElement;
+      if (parentElement && parentElement.tagName === "A") {
+        linkElement = parentElement as HTMLAnchorElement;
+        existingUrl = linkElement.href;
+        isExistingLink = true;
+      }
+    } else {
+      // No selection - create range at cursor position
+      if (contentRef.current) {
+        range = document.createRange();
+        const textNode = document.createTextNode("link text");
+        contentRef.current.appendChild(textNode);
+        range.selectNodeContents(textNode);
+        range.collapse(false);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        selectedText = "link text";
+      }
+    }
+
+    if (!range) return;
+
+    // Prompt for URL
+    const urlPrompt = existingUrl 
+      ? `Edit link URL:\n\nCurrent URL: ${existingUrl}\n\nEnter new URL (or leave empty to remove link):`
+      : `Enter the URL for "${selectedText}":\n\nExample: https://example.com`;
+    
+    const url = prompt(urlPrompt, existingUrl);
+
+    if (url === null) {
+      // User cancelled - if we created placeholder text, remove it
+      if (!selectedText && contentRef.current) {
+        const textNodes = Array.from(contentRef.current.childNodes);
+        const lastNode = textNodes[textNodes.length - 1];
+        if (lastNode && lastNode.textContent === "link text") {
+          contentRef.current.removeChild(lastNode);
+        }
+      }
+      return;
+    }
+
+    if (url === "" && isExistingLink && linkElement) {
+      // Remove link but keep text
+      const parent = linkElement.parentNode;
+      if (parent) {
+        while (linkElement.firstChild) {
+          parent.insertBefore(linkElement.firstChild, linkElement);
+        }
+        parent.removeChild(linkElement);
+      }
+      updateContent();
+      if (contentRef.current) {
+        contentRef.current.focus();
+      }
+      return;
+    }
+
+    if (!url || url.trim() === "") {
+      // Empty URL - remove placeholder if we created it
+      if (selectedText === "link text" && contentRef.current) {
+        const textNodes = Array.from(contentRef.current.childNodes);
+        const lastNode = textNodes[textNodes.length - 1];
+        if (lastNode && lastNode.textContent === "link text") {
+          contentRef.current.removeChild(lastNode);
+        }
+      }
+      return;
+    }
+
+    // Ensure URL has protocol
+    let finalUrl = url.trim();
+    if (!finalUrl.match(/^https?:\/\//i)) {
+      finalUrl = "https://" + finalUrl;
+    }
+
+    if (isExistingLink && linkElement) {
+      // Update existing link
+      linkElement.href = finalUrl;
+      linkElement.target = "_blank";
+      linkElement.rel = "noopener noreferrer";
+    } else {
+      // Create new link
+      if (contentRef.current) {
+        contentRef.current.focus();
+      }
+      
+      // Try execCommand first
+      const success = document.execCommand("createLink", false, finalUrl);
+      
+      if (!success) {
+        // Fallback: manually create link element
+        try {
+          const link = document.createElement("a");
+          link.href = finalUrl;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = selectedText || "link text";
+          
+          if (range) {
+            range.deleteContents();
+            range.insertNode(link);
+            
+            // Select the new link
+            const newRange = document.createRange();
+            newRange.selectNodeContents(link);
+            newRange.collapse(false);
+            selection?.removeAllRanges();
+            selection?.addRange(newRange);
+          }
+        } catch (e) {
+          console.error("Error creating link:", e);
+          alert("Error creating link. Please try again.");
+          return;
+        }
+      } else {
+        // execCommand succeeded - set attributes
+        const links = contentRef.current?.querySelectorAll("a");
+        if (links && links.length > 0) {
+          const lastLink = links[links.length - 1] as HTMLAnchorElement;
+          lastLink.target = "_blank";
+          lastLink.rel = "noopener noreferrer";
+        }
+      }
+    }
+
+    updateContent();
+    if (contentRef.current) {
+      contentRef.current.focus();
+    }
+  };
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Get final content from editor
+    const finalContent = contentRef.current?.innerHTML || formData.content;
     
     const blogPost: BlogPost = {
       id: editingBlog?.id || Date.now().toString(),
       title: formData.title,
       excerpt: formData.excerpt,
-      content: formData.content,
+      content: finalContent,
       author: formData.author,
       date: editingBlog?.date || new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-      readTime: calculateReadTime(formData.content),
+      readTime: calculateReadTime(contentRef.current?.innerText || finalContent),
       category: formData.category,
       published: formData.published,
+      coverPhoto: formData.coverPhoto || undefined,
     };
 
     let updatedBlogs;
@@ -207,6 +446,7 @@ export default function BlogAdmin() {
     return `${minutes} min read`;
   };
 
+
   const handleEdit = (blog: BlogPost) => {
     setEditingBlog(blog);
     setFormData({
@@ -216,8 +456,17 @@ export default function BlogAdmin() {
       author: blog.author,
       category: blog.category,
       published: blog.published,
+      coverPhoto: blog.coverPhoto || "",
     });
+    setShowNewCategoryInput(false);
+    setNewCategory("");
     setShowEditor(true);
+    // Set content in editor after a brief delay to ensure DOM is ready
+    setTimeout(() => {
+      if (contentRef.current) {
+        contentRef.current.innerHTML = blog.content || '';
+      }
+    }, 100);
   };
 
   const handleDelete = (id: string) => {
@@ -237,7 +486,13 @@ export default function BlogAdmin() {
       author: "",
       category: "",
       published: false,
+      coverPhoto: "",
     });
+    setShowNewCategoryInput(false);
+    setNewCategory("");
+    if (contentRef.current) {
+      contentRef.current.innerHTML = "";
+    }
   };
 
   const handleNewBlog = () => {
@@ -357,6 +612,48 @@ export default function BlogAdmin() {
             </div>
 
             <form onSubmit={handleSave} className="space-y-6">
+              {/* Cover Photo Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Cover Photo
+                </label>
+                <div className="space-y-4">
+                  {formData.coverPhoto && (
+                    <div className="relative w-full h-64 rounded-xl overflow-hidden border-2 border-gray-200">
+                      <img
+                        src={formData.coverPhoto}
+                        alt="Cover preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, coverPhoto: "" })}
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg className="w-8 h-8 mb-2 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload</span> or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">PNG, JPG or GIF (MAX. 5MB)</p>
+                    </div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                </div>
+              </div>
+
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -374,14 +671,100 @@ export default function BlogAdmin() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Category *
                   </label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="e.g., Budgeting, Loans, Savings"
-                    required
-                  />
+                  <div className="space-y-2">
+                    {!showNewCategoryInput ? (
+                      <div className="flex gap-2">
+                        <select
+                          value={formData.category}
+                          onChange={(e) => {
+                            if (e.target.value === "__new__") {
+                              setShowNewCategoryInput(true);
+                              setFormData({ ...formData, category: "" });
+                            } else {
+                              setFormData({ ...formData, category: e.target.value });
+                            }
+                          }}
+                          className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                          required
+                        >
+                          <option value="">Select a category</option>
+                          {getExistingCategories().map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                          <option value="__new__">+ Create New Category</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newCategory}
+                          onChange={(e) => setNewCategory(e.target.value)}
+                          onBlur={() => {
+                            if (newCategory.trim()) {
+                              setFormData({ ...formData, category: newCategory.trim() });
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              if (newCategory.trim()) {
+                                setFormData({ ...formData, category: newCategory.trim() });
+                                setShowNewCategoryInput(false);
+                                setNewCategory("");
+                              }
+                            } else if (e.key === "Escape") {
+                              setShowNewCategoryInput(false);
+                              setNewCategory("");
+                            }
+                          }}
+                          className="flex-1 px-4 py-3 border-2 border-primary-500 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          placeholder="Enter new category name"
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (newCategory.trim()) {
+                              setFormData({ ...formData, category: newCategory.trim() });
+                            }
+                            setShowNewCategoryInput(false);
+                            setNewCategory("");
+                          }}
+                          className="px-4 py-3 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-colors font-semibold"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowNewCategoryInput(false);
+                            setNewCategory("");
+                            setFormData({ ...formData, category: "" });
+                          }}
+                          className="px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                    {formData.category && !showNewCategoryInput && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span>Selected: <strong className="text-gray-900">{formData.category}</strong></span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, category: "" });
+                          }}
+                          className="text-primary-600 hover:text-primary-700 font-medium"
+                        >
+                          Change
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -403,13 +786,136 @@ export default function BlogAdmin() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Content *
                 </label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm"
-                  rows={15}
-                  placeholder="Write your blog content here..."
-                  required
+                
+                {/* Formatting Toolbar */}
+                <div className="flex flex-wrap items-center gap-2 p-3 bg-gray-50 border-2 border-b-0 border-gray-200 rounded-t-xl">
+                  <button
+                    type="button"
+                    onClick={() => handleFormat("bold")}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Bold"
+                  >
+                    <Bold className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFormat("italic")}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Italic"
+                  >
+                    <Italic className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFormat("underline")}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Underline"
+                  >
+                    <Underline className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-6 bg-gray-300 mx-1" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFormat("formatBlock", "h1");
+                    }}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Heading 1"
+                  >
+                    <Heading1 className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFormat("formatBlock", "h2");
+                    }}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Heading 2"
+                  >
+                    <Heading2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFormat("formatBlock", "h3");
+                    }}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Heading 3"
+                  >
+                    <Heading3 className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-6 bg-gray-300 mx-1" />
+                  <button
+                    type="button"
+                    onClick={() => handleFormat("insertUnorderedList")}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Bullet List"
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFormat("insertOrderedList")}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Numbered List"
+                  >
+                    <List className="w-4 h-4 rotate-90" />
+                  </button>
+                  <div className="w-px h-6 bg-gray-300 mx-1" />
+                  <button
+                    type="button"
+                    onClick={handleLink}
+                    className="p-2 hover:bg-gray-200 rounded transition-colors"
+                    title="Insert Link"
+                  >
+                    <LinkIcon className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-6 bg-gray-300 mx-1" />
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        handleFormat("foreColor", e.target.value);
+                      }
+                    }}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                    title="Text Color"
+                  >
+                    <option value="">Color</option>
+                    <option value="#000000">Black</option>
+                    <option value="#333333">Dark Gray</option>
+                    <option value="#666666">Gray</option>
+                    <option value="#0066CC">Blue</option>
+                    <option value="#009900">Green</option>
+                    <option value="#CC0000">Red</option>
+                    <option value="#FF6600">Orange</option>
+                    <option value="#9900CC">Purple</option>
+                  </select>
+                </div>
+
+                {/* Rich Text Editor */}
+                <div
+                  ref={contentRef}
+                  contentEditable
+                  onInput={updateContent}
+                  onBlur={updateContent}
+                  onKeyDown={(e) => {
+                    // Ensure LTR direction on key events
+                    if (contentRef.current) {
+                      contentRef.current.style.direction = 'ltr';
+                      contentRef.current.style.textAlign = 'left';
+                    }
+                  }}
+                  className="w-full min-h-[400px] px-4 py-3 border-2 border-gray-200 rounded-b-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-poppins text-base bg-white blog-editor"
+                  style={{
+                    direction: 'ltr',
+                    textAlign: 'left',
+                    outline: 'none'
+                  }}
+                  suppressContentEditableWarning
+                  data-placeholder="Write your blog content here... You can format text, add headings, links, and more!"
                 />
               </div>
 

@@ -38,44 +38,39 @@ export default function Careers() {
     {
       icon: Zap,
       title: "Competitive Salary",
-      description: "We offer competitive compensation packages that reflect your skills and experience.",
+      description: "We pay well because good people deserve good compensation. Your skills and experience matter, and we'll make sure you're rewarded for them.",
     },
     {
       icon: Heart,
       title: "Health & Wellness",
-      description: "Comprehensive health insurance, dental, vision, and wellness programs.",
+      description: "Your health comes first. We offer comprehensive health, dental, and vision insurance, plus wellness programs to keep you feeling your best.",
     },
     {
       icon: Clock,
       title: "Flexible Work",
-      description: "Remote work options and flexible hours to support work-life balance.",
+      description: "Work from wherever makes sense for you. We trust you to get your work done, whether that's at home, in an office, or somewhere in between.",
     },
     {
       icon: TrendingUp,
       title: "Career Growth",
-      description: "Opportunities for professional development and career advancement.",
+      description: "We want you to grow. Whether that's learning new skills, taking on bigger projects, or moving into leadership, we'll support your journey.",
     },
     {
       icon: Users,
       title: "Great Team",
-      description: "Work with talented, passionate people who care about your success.",
+      description: "You'll work with smart, kind people who actually care about what we're building. No egos, no politics. Just good people doing good work.",
     },
     {
       icon: Briefcase,
       title: "Learning Budget",
-      description: "Annual budget for conferences, courses, and professional development.",
+      description: "Want to go to a conference? Take a course? Read some books? We'll cover it. Learning is part of the job, and we'll invest in yours.",
     },
   ];
 
   return (
     <div className="pt-16 overflow-hidden">
       {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-br from-primary-50 via-white to-accent-50 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl animate-pulse-slow animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl animate-pulse-slow delay-1000" style={{ animationDelay: '2s' }}></div>
-        </div>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 overflow-hidden">
 
         <div className="relative text-center mb-12" ref={heroAnimation.ref}>
           <div className={`transition-all duration-1000 ease-out ${
@@ -91,10 +86,11 @@ export default function Careers() {
               Back to Home
             </Link>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-              Join the MoneyDesk Team
+              Help us make money management
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> less stressful</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Help us build the future of personal finance management. We're looking for talented individuals who are passionate about making financial management accessible to everyone.
+              We're building tools that help real people take control of their finances. If you're passionate about making money management simpler and less intimidating, we'd love to talk.
             </p>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100/50 rounded-full">
               <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></span>
@@ -113,10 +109,10 @@ export default function Careers() {
               : 'opacity-0 translate-y-10'
           }`}>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Work at MoneyDesk?
+              Why work with us?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We offer a supportive environment where you can grow your career while making a real impact
+              We're building something that actually matters. Here's what makes working at MoneyDesk different.
             </p>
           </div>
         </div>
@@ -246,10 +242,10 @@ export default function Careers() {
         }`}>
           <div className="relative z-10 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Join Our Team?
+              Think you'd be a good fit?
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              We're always looking for talented individuals who share our passion for financial empowerment
+              Even if we don't have an open position right now, we're always interested in talking to talented people who share our mission.
             </p>
             <Link
               href="mailto:support@moneydesk.co?subject=Career Inquiry"

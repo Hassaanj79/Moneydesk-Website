@@ -6,6 +6,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
+import { InteractiveBackground } from "@/components/InteractiveBackground";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -14,8 +15,21 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "MoneyDesk - Personal Finance Management Made Simple",
-  description: "Take control of your finances with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve your financial goals.",
+  title: "MoneyDesk - Personal Finance App | Budget Tracker & Expense Manager",
+  description: "Take control of your money with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve financial goals. Free 14-day trial. No credit card required.",
+  keywords: "personal finance, budget tracker, expense tracking, money management, financial planning, loan management, savings goals, budget app, expense manager, financial software",
+  authors: [{ name: "MoneyDesk" }],
+  openGraph: {
+    title: "MoneyDesk - Personal Finance Management Made Simple",
+    description: "Take control of your finances with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve your financial goals.",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MoneyDesk - Personal Finance Management Made Simple",
+    description: "Take control of your finances with MoneyDesk. Track expenses, manage budgets, handle loans, and achieve your financial goals.",
+  },
   icons: {
     icon: "/header-logo.png",
     shortcut: "/header-logo.png",
@@ -31,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body className={`${poppins.className} antialiased`}>
+        <InteractiveBackground />
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-QSWTPNJ8VP"

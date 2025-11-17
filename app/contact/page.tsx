@@ -71,12 +71,7 @@ export default function Contact() {
   return (
     <div className="pt-16 overflow-hidden">
       {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-br from-primary-50/50 via-white to-secondary/5 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl"></div>
-        </div>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 overflow-hidden">
         
         <div className="relative text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-100 to-primary-50 text-primary-600 rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-primary-200 shadow-lg">
@@ -84,11 +79,11 @@ export default function Contact() {
             We're here to help
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Get in
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> touch</span>
+            Let's talk
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> about your money</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Got questions? Need help? Want to share feedback? We're listening. Drop us a line and we'll get back to you as soon as we can.
           </p>
         </div>
 
@@ -149,7 +144,7 @@ export default function Contact() {
           <div className="relative">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200 shadow-xl">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                Send us a Message
+                Send us a message
               </h2>
               {submitted ? (
                 <div className="bg-gradient-to-br from-success/20 to-success/10 border-2 border-success/40 rounded-2xl p-8 text-center animate-pulse">
@@ -267,10 +262,10 @@ export default function Contact() {
                 <span className="text-white font-semibold text-sm">Get Started</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                Ready to experience these features?
+                Ready to take control of your finances?
               </h2>
               <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                Start your free trial today and see how MoneyDesk can transform your financial management.
+                Start your free 14-day trial and see how MoneyDesk can help you manage your money better. No credit card required.
               </p>
               <a
                 href="https://app.moneydesk.co/signup"

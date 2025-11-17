@@ -19,13 +19,7 @@ export default function Home() {
   return (
     <div className="pt-16 overflow-hidden">
       {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 bg-gradient-to-br from-primary-50 via-white to-accent-50 overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl animate-pulse-slow animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-200/30 rounded-full blur-3xl animate-pulse-slow delay-1000" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-100/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-        </div>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 overflow-hidden">
         <div className="relative max-w-4xl mx-auto" ref={heroAnimation.ref}>
           <div className={`text-center transition-all duration-1000 ease-out ${
             heroAnimation.isVisible || isVisible 
@@ -35,14 +29,14 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-secondary/10 to-secondary/5 text-secondary-dark rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-secondary/20 shadow-lg hover:shadow-xl transition-all hover:scale-105">
               <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
               <Zap className="w-4 h-4" />
-              New: AI-Powered Financial Insights
+              New: AI-powered insights
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              Take control of your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> finances</span>
+              Stop wondering where your money went.
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-primary-600"> Start knowing.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              MoneyDesk helps you track expenses, manage budgets, handle loans, and achieve your financial goals—all in one place.
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+              Track expenses, manage budgets, and hit your savings goals. All in one simple app.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Link
@@ -107,8 +101,7 @@ export default function Home() {
       </section>
 
       {/* Features Overview */}
-      <section className="relative bg-gradient-to-b from-white via-primary-50/30 to-accent-50/50 py-20 overflow-hidden" ref={featuresAnimation.ref}>
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <section className="relative py-20 overflow-hidden" ref={featuresAnimation.ref}>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-1000 ease-out ${
             featuresAnimation.isVisible 
@@ -119,10 +112,10 @@ export default function Home() {
               <span className="text-primary-600 font-semibold text-sm">Features</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Everything you need to manage your money
+              Your money, simplified
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Powerful features designed to help you stay on top of your finances
+              Everything you need to manage your finances, without the complexity.
             </p>
           </div>
 
@@ -131,43 +124,43 @@ export default function Home() {
               {
                 icon: CreditCard,
                 title: "Expense Tracking",
-                description: "Track every transaction with ease. Categorize expenses and see where your money goes.",
+                description: "See exactly where your money goes. Add transactions in seconds and watch your spending habits become crystal clear.",
                 color: "primary",
               },
               {
                 icon: Target,
                 title: "Budget Management",
-                description: "Set budgets for different categories and get alerts when you're approaching limits.",
+                description: "Create budgets that actually work. Set limits and get friendly nudges before you overspend.",
                 color: "secondary",
               },
               {
                 icon: TrendingUp,
                 title: "Financial Reports",
-                description: "Visualize your spending patterns with detailed charts and insights.",
+                description: "Beautiful charts and reports that show your spending trends and financial health at a glance.",
                 color: "success",
               },
               {
                 icon: Shield,
                 title: "Loan Management",
-                description: "Track loans, calculate interest, and manage repayments effortlessly.",
+                description: "Track all your loans in one place. See what you owe, when it's due, and how much interest costs.",
                 color: "primary",
               },
               {
                 icon: BarChart3,
                 title: "Goal Tracking",
-                description: "Set savings goals and track your progress toward financial milestones.",
+                description: "Set savings goals and watch your progress grow. It's surprisingly motivating.",
                 color: "accent",
               },
               {
                 icon: Sparkles,
                 title: "AI Insights",
-                description: "Get personalized financial advice powered by artificial intelligence.",
+                description: "Get personalized tips on saving more, spending smarter, and reaching your goals faster.",
                 color: "secondary",
               },
               {
                 icon: Languages,
                 title: "Multi-Language Support",
-                description: "Use MoneyDesk in your preferred language. Available in English, Spanish, French, German, and more.",
+                description: "Available in English, Spanish, French, German, and more.",
                 color: "primary",
               },
             ].map((feature, index) => {
@@ -223,12 +216,12 @@ export default function Home() {
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 leading-tight transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '300ms' }}>
-              Ready to experience these features?
+              Ready to take control?
             </h2>
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              Start your free trial today and see how MoneyDesk can transform your financial management.
+              Start your free 14-day trial. No credit card needed.
             </p>
             <Link
               href="https://app.moneydesk.co/signup"
