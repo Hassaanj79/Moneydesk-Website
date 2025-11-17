@@ -33,6 +33,10 @@ export default function TermsOfService() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Agreement to Terms</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               By accessing or using MoneyDesk's website and services, you agree to be bound by these Terms of Service ("Terms"). 
+              MoneyDesk is a child company of Novex Solutions LLC, our parent organization. These Terms govern your use of MoneyDesk's services 
+              and your relationship with MoneyDesk as a child company of Novex Solutions LLC.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-4">
               If you disagree with any part of these terms, you may not access the service.
             </p>
           </section>
@@ -118,10 +122,11 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Intellectual Property</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              The service and its original content, features, and functionality are owned by MoneyDesk and are protected by international 
-              copyright, trademark, patent, trade secret, and other intellectual property laws.
+              The service and its original content, features, and functionality are owned by MoneyDesk and Novex Solutions LLC, our parent company, 
+              and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
+              As a child company of Novex Solutions LLC, MoneyDesk operates with the authorization and under the intellectual property framework of our parent organization. 
               You may not copy, modify, distribute, sell, or lease any part of our service without our prior written consent.
             </p>
           </section>
@@ -149,9 +154,9 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Indemnification</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              You agree to defend, indemnify, and hold harmless MoneyDesk and its officers, directors, employees, and agents from and against 
-              any claims, liabilities, damages, losses, and expenses, including reasonable attorney's fees, arising out of or in any way connected 
-              with your access to or use of the service or your violation of these Terms.
+              You agree to defend, indemnify, and hold harmless MoneyDesk, Novex Solutions LLC (our parent company), and their respective officers, directors, employees, 
+              and agents from and against any claims, liabilities, damages, losses, and expenses, including reasonable attorney's fees, arising out of 
+              or in any way connected with your access to or use of the service or your violation of these Terms.
             </p>
           </section>
 
@@ -178,13 +183,16 @@ export default function TermsOfService() {
             </p>
             <div className="bg-gray-50 rounded-lg p-6">
               <p className="text-gray-700 mb-2">
+                <strong>Company:</strong> MoneyDesk (a child company of Novex Solutions LLC)
+              </p>
+              <p className="text-gray-700 mb-2">
                 <strong>Email:</strong>{" "}
                 <a href="mailto:support@moneydesk.co" className="text-primary-600 hover:text-primary-700 underline">
                   support@moneydesk.co
                 </a>
               </p>
               <p className="text-gray-700 mb-2">
-                <strong>Address:</strong> 123 Finance Street, San Francisco, CA 94105, United States
+                <strong>Address:</strong> 1111B S Governors Ave STE 26220, Dover, DE 19904, United States
               </p>
             </div>
           </section>

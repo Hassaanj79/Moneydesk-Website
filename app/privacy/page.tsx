@@ -32,8 +32,13 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              Welcome to MoneyDesk ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. 
+              Welcome to MoneyDesk ("we," "our," or "us"). MoneyDesk is a child company of Novex Solutions LLC, our parent organization. 
+              We are committed to protecting your personal information and your right to privacy. 
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              As a child company of Novex Solutions LLC, MoneyDesk operates independently while maintaining compliance with our parent company's standards and policies. 
+              Your data is handled in accordance with this Privacy Policy and applicable data protection laws.
             </p>
           </section>
 
@@ -111,12 +116,17 @@ export default function PrivacyPolicy() {
               We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:
             </p>
             <ul className="list-disc list-inside text-gray-700 mb-4 space-y-2">
+              <li>With Novex Solutions LLC, our parent company, and affiliated companies for business operations, compliance, and service improvement purposes</li>
               <li>With service providers who assist us in operating our website and conducting our business</li>
               <li>When required by law or to respond to legal process</li>
-              <li>To protect our rights, privacy, safety, or property</li>
+              <li>To protect our rights, privacy, safety, or property, or that of Novex Solutions LLC</li>
               <li>In connection with a business transfer or merger</li>
               <li>With your consent or at your direction</li>
             </ul>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              When we share information with Novex Solutions LLC or its affiliates, we ensure that such sharing is done in accordance with this Privacy Policy 
+              and applicable data protection laws. Novex Solutions LLC and its affiliates are bound by the same privacy standards and commitments.
+            </p>
           </section>
 
           <section className="mb-8">
@@ -163,13 +173,16 @@ export default function PrivacyPolicy() {
             </p>
             <div className="bg-gray-50 rounded-lg p-6">
               <p className="text-gray-700 mb-2">
+                <strong>Company:</strong> MoneyDesk (a child company of Novex Solutions LLC)
+              </p>
+              <p className="text-gray-700 mb-2">
                 <strong>Email:</strong>{" "}
                 <a href="mailto:support@moneydesk.co" className="text-primary-600 hover:text-primary-700 underline">
                   support@moneydesk.co
                 </a>
               </p>
               <p className="text-gray-700 mb-2">
-                <strong>Address:</strong> 123 Finance Street, San Francisco, CA 94105, United States
+                <strong>Address:</strong> 1111B S Governors Ave STE 26220, Dover, DE 19904, United States
               </p>
             </div>
           </section>
