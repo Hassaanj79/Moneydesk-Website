@@ -270,14 +270,15 @@ export default function Pricing() {
                   ))}
                 </ul>
                 <button
-                  onClick={handleGetStarted}
-                  className={`block w-full text-center px-6 py-3 rounded-lg font-semibold transition-all hover:shadow-lg transform hover:-translate-y-0.5 ${
+                  onClick={() => handleCheckout(billingPeriod)}
+                  disabled={loading === billingPeriod}
+                  className={`block w-full text-center px-6 py-3 rounded-lg font-semibold transition-all hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed ${
                     plan.popular
                       ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 shadow-lg"
                       : "bg-gray-900 text-white hover:bg-gray-800"
                   }`}
                 >
-                  {plan.cta}
+                  {loading === billingPeriod ? "Processing..." : plan.cta}
                 </button>
               </div>
             </div>
