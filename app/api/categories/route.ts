@@ -15,7 +15,12 @@ export async function GET(request: NextRequest) {
       updatedAt: cat.updated_at,
     }));
 
-    return NextResponse.json({ success: true, categories: formattedCategories });
+    const response = NextResponse.json({ success: true, categories: formattedCategories });
+    
+    // Add caching headers for better performance
+    response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    
+    return response;
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json(
@@ -24,6 +29,9 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Enable caching for this route
+export const revalidate = 300; // Revalidate every 5 minutes
 
 // POST create new category
 export async function POST(request: NextRequest) {

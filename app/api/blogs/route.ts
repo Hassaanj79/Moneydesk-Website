@@ -39,7 +39,12 @@ export async function GET(request: NextRequest) {
       coverPhoto: blog.cover_photo || undefined,
     }));
 
-    return NextResponse.json({ success: true, blogs: formattedBlogs });
+    const response = NextResponse.json({ success: true, blogs: formattedBlogs });
+    
+    // Add caching headers for better performance
+    response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+    
+    return response;
   } catch (error) {
     console.error("Error fetching blogs:", error);
     return NextResponse.json(
@@ -48,6 +53,9 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Enable caching for this route
+export const revalidate = 60; // Revalidate every 60 seconds
 
 // POST create new blog
 export async function POST(request: NextRequest) {

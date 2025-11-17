@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Check, TrendingUp, Shield, Target, CreditCard, BarChart3, Sparkles, Zap, Award, Users, Languages } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function Home() {

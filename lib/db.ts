@@ -22,6 +22,12 @@ const dbConfig = {
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
+  // Performance optimizations
+  acquireTimeout: 60000,
+  timeout: 60000,
+  reconnect: true,
+  // Reduce connection overhead
+  multipleStatements: false,
 };
 
 // Create connection pool

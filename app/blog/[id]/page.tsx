@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar, User, Clock, Share2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface BlogPost {
   id: string;
@@ -139,11 +140,14 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
           <article className="lg:col-span-2">
             {/* Cover Photo */}
             {blog.coverPhoto && (
-              <div className="mb-8 rounded-xl overflow-hidden">
-                <img
+              <div className="mb-8 rounded-xl overflow-hidden relative w-full h-96">
+                <Image
                   src={blog.coverPhoto}
                   alt={blog.title}
-                  className="w-full h-auto max-h-96 object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 66vw"
+                  priority
                 />
               </div>
             )}

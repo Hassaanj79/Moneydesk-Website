@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar, User, ArrowRight, Clock, FileText, CheckCircle, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Toast } from "@/components/Toast";
 
 interface BlogPost {
@@ -69,8 +70,10 @@ export default function Blog() {
     loadBlogs();
   }, []);
 
-  // Get unique categories
-  const categories = ["all", ...Array.from(new Set(blogPosts.map(post => post.category)))];
+  // Get unique categories (memoized to prevent recalculation)
+  const categories = useMemo(() => {
+    return ["all", ...Array.from(new Set(blogPosts.map(post => post.category)))];
+  }, [blogPosts]);
 
   useEffect(() => {
     if (selectedCategory === "all") {
@@ -227,10 +230,13 @@ export default function Blog() {
                 {/* Cover Photo or Placeholder */}
                 <div className="h-48 bg-gradient-to-br from-primary-50 to-accent-50 relative overflow-hidden">
                   {post.coverPhoto ? (
-                    <img
+                    <Image
                       src={post.coverPhoto}
                       alt={post.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
