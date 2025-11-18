@@ -46,7 +46,7 @@ export function Footer() {
             <p className="text-sm text-gray-600 mb-4">
               The personal finance app that helps you understand where your money goes and take control of your financial future.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 mb-4">
               <a 
                 href="https://www.instagram.com/moneydesk.co/" 
                 target="_blank" 
@@ -84,6 +84,22 @@ export function Footer() {
                 aria-label="X (Twitter)"
               >
                 <Twitter className="h-5 w-5 group-hover:scale-110" />
+              </a>
+            </div>
+            <div className="mt-4">
+              <a 
+                href="https://www.producthunt.com/products/moneydesk?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-moneydesk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block transition-transform hover:scale-105"
+              >
+                <img 
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1039766&theme=light&t=1763507850152" 
+                  alt="MoneyDesk - Personal AI finance app | budget, Loan & expense manager | Product Hunt" 
+                  style={{ width: "250px", height: "54px" }} 
+                  width={250} 
+                  height={54} 
+                />
               </a>
             </div>
           </div>

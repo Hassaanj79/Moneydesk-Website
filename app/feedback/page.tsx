@@ -448,7 +448,7 @@ export default function FeedbackPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all disabled:opacity-50"
+                      className="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitting ? "Submitting..." : "Submit"}
                     </button>
