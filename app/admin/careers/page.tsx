@@ -332,6 +332,12 @@ export default function CareersAdmin() {
             >
               Manage Blog
             </Link>
+            <Link
+              href="/admin/feedback"
+              className="px-4 py-2 bg-primary-100 text-primary-600 rounded-xl font-semibold hover:bg-primary-200 transition-all"
+            >
+              Manage Feedback
+            </Link>
             <button
               onClick={() => {
                 sessionStorage.removeItem("blogAdminAuth");

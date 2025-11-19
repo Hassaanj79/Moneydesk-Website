@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { InteractiveBackground } from "@/components/InteractiveBackground";
+import { TawkChat } from "@/components/TawkChat";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -66,6 +67,7 @@ export default function RootLayout({
         <Footer />
         <CookieConsent />
         <Analytics />
+        <TawkChat />
       </body>
     </html>
   );

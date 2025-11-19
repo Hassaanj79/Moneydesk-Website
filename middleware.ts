@@ -6,9 +6,9 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 // Rate limit configuration
 const RATE_LIMIT = {
   windowMs: 15 * 60 * 1000, // 15 minutes
-  maxRequests: 100, // Max requests per window
-  apiMaxRequests: 20, // Max API requests per window (production)
-  apiMaxRequestsDev: 200, // Max API requests per window (development/localhost)
+  maxRequests: 1000, // Max requests per window (increased)
+  apiMaxRequests: 100, // Max API requests per window (production - increased)
+  apiMaxRequestsDev: 1000, // Max API requests per window (development/localhost - increased)
 };
 
 function getRateLimitKey(request: NextRequest): string {
@@ -67,8 +67,8 @@ export function middleware(request: NextRequest) {
                        pathname.startsWith('/api/contact/submissions') ||
                        pathname.startsWith('/api/newsletter/subscribers');
   
-  // Rate limiting (more lenient for localhost, skip for admin routes)
-  if (!isAdminRoute) {
+  // Rate limiting (skip for admin routes and localhost)
+  if (!isAdminRoute && !isLocalhost) {
     const rateLimitKey = getRateLimitKey(request);
     if (!checkRateLimit(rateLimitKey, isApiRoute, isLocalhost)) {
       return NextResponse.json(

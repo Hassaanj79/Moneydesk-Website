@@ -76,9 +76,9 @@ export default function Home() {
         }`}>
           <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {[
-              { icon: Users, value: "10K+", label: "Active Users", iconColor: "text-green-300" },
-              { icon: Award, value: "4.9/5", label: "User Rating", iconColor: "text-yellow-300" },
-              { icon: Zap, value: "99.9%", label: "Uptime", iconColor: "text-green-300" },
+              { icon: Target, value: "14 Days", label: "Free Trial", iconColor: "text-green-300" },
+              { icon: Zap, value: "24/7", label: "Always Available", iconColor: "text-yellow-300" },
+              { icon: Shield, value: "100%", label: "Secure & Private", iconColor: "text-green-300" },
             ].map((stat, index) => (
               <div 
                 key={index} 

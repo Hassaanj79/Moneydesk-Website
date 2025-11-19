@@ -45,10 +45,10 @@ export default function About() {
   ];
 
   const stats = [
-    { icon: Users, value: "10K+", label: "Active Users", color: "text-primary-600" },
-    { icon: TrendingUp, value: "99.9%", label: "Uptime", color: "text-success-dark" },
-    { icon: Award, value: "4.9/5", label: "User Rating", color: "text-secondary-dark" },
-    { icon: Globe, value: "50+", label: "Countries", color: "text-accent-dark" },
+    { icon: Target, value: "14 Days", label: "Free Trial", color: "text-primary-600" },
+    { icon: TrendingUp, value: "24/7", label: "Always Available", color: "text-success-dark" },
+    { icon: Shield, value: "100%", label: "Secure & Private", color: "text-secondary-dark" },
+    { icon: Globe, value: "Unlimited", label: "Accounts & Budgets", color: "text-accent-dark" },
   ];
 
   return (

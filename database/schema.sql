@@ -149,3 +149,31 @@ CREATE TABLE IF NOT EXISTS blog_categories (
   INDEX idx_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Chat conversations table
+CREATE TABLE IF NOT EXISTS chat_conversations (
+  id VARCHAR(255) PRIMARY KEY,
+  user_name VARCHAR(255),
+  user_email VARCHAR(255),
+  user_phone VARCHAR(50),
+  issue_description TEXT,
+  status ENUM('open', 'in-progress', 'resolved', 'closed') DEFAULT 'open',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_status (status),
+  INDEX idx_created_at (created_at),
+  INDEX idx_user_email (user_email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Chat messages table
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id VARCHAR(255) PRIMARY KEY,
+  conversation_id VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  sender ENUM('user', 'bot', 'admin') NOT NULL,
+  sender_name VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (conversation_id) REFERENCES chat_conversations(id) ON DELETE CASCADE,
+  INDEX idx_conversation_id (conversation_id),
+  INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

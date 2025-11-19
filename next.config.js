@@ -46,17 +46,19 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://client.crisp.chat https://www.google-analytics.com https://www.google.com https://www.gstatic.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://client.crisp.chat https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://embed.tawk.to https://*.tawk.to https://embed.tawk.to/_s/v4/app/*",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://embed.tawk.to https://*.tawk.to",
+              "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://embed.tawk.to https://*.tawk.to",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://www.google-analytics.com https://api.resend.com https://api.sendgrid.com https://client.crisp.chat wss://client.crisp.chat https://www.google.com https://www.gstatic.com",
-              "frame-src 'self' https://client.crisp.chat https://www.google.com",
+              "connect-src 'self' https://www.google-analytics.com https://api.resend.com https://api.sendgrid.com https://client.crisp.chat wss://client.crisp.chat https://www.google.com https://www.gstatic.com https://generativelanguage.googleapis.com https://*.googleapis.com https://embed.tawk.to wss://embed.tawk.to https://*.tawk.to https://tawk.to wss://tawk.to https://*.tawk.to/* wss://*.tawk.to/* https://*.tawk.to:443 wss://*.tawk.to:443 https://tawk.to/* wss://tawk.to/* https://embed.tawk.to/_s/* wss://embed.tawk.to/_s/*",
+              "frame-src 'self' https://client.crisp.chat https://www.google.com https://embed.tawk.to https://*.tawk.to",
+              "child-src 'self' https://embed.tawk.to https://*.tawk.to",
+              "worker-src 'self' blob:",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
-              "frame-ancestors 'none'",
-              "upgrade-insecure-requests"
+              "frame-ancestors 'none'"
             ].join('; ')
           }
         ],
