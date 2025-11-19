@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, TrendingUp, Shield, Target, CreditCard, BarChart3, Sparkles, Zap, Award, Users, Languages } from "lucide-react";
+import { ArrowRight, Check, TrendingUp, Shield, Target, CreditCard, BarChart3, Sparkles, Zap, Award, Users, Languages, LineChart } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -162,6 +162,12 @@ export default function Home() {
                 title: "Multi-Language Support",
                 description: "Available in English, Spanish, French, German, and more.",
                 color: "primary",
+              },
+              {
+                icon: LineChart,
+                title: "Monthly Projections",
+                description: "See into the future of your finances. Get accurate monthly projections based on your spending patterns and upcoming bills.",
+                color: "success",
               },
             ].map((feature, index) => {
               const colorClasses = {

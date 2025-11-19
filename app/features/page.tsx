@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, CreditCard, Target, TrendingUp, Shield, BarChart3, Sparkles, Calendar, Bell, Globe, ArrowRight, Languages } from "lucide-react";
+import { Check, CreditCard, Target, TrendingUp, Shield, BarChart3, Sparkles, Calendar, Bell, Globe, ArrowRight, Languages, LineChart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -54,6 +54,11 @@ export default function Features() {
           icon: BarChart3,
           title: "Financial Reports",
           description: "Generate detailed reports on your income, expenses, and overall financial health. Perfect for tax season, financial planning, or just understanding your money better.",
+        },
+        {
+          icon: LineChart,
+          title: "Monthly Projections",
+          description: "See into the future of your finances. Get accurate monthly projections based on your spending patterns, upcoming bills, and income. Plan ahead with confidence and avoid surprises.",
         },
       ],
     },
