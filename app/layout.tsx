@@ -72,8 +72,7 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
   verification: {
-    // Add your Google Search Console verification code here when available
-    // google: 'your-verification-code',
+    google: 'FkYxPdfh6VrbteXLzmOAGlQfxSyraREKSfoU0yzBm2o',
   },
 };
 
@@ -142,6 +141,23 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <head>
+        {/* Google Site Verification */}
+        <meta name="google-site-verification" content="FkYxPdfh6VrbteXLzmOAGlQfxSyraREKSfoU0yzBm2o" />
+        {/* Google tag (gtag.js) - Required for Google Analytics verification - Must be in <head> */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-QSWTPNJ8VP"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-QSWTPNJ8VP');
+            `,
+          }}
+        />
         {/* Structured Data (JSON-LD) */}
         <script
           type="application/ld+json"
@@ -158,19 +174,6 @@ export default function RootLayout({
       </head>
       <body className={`${poppins.className} antialiased`}>
         <InteractiveBackground />
-        {/* Google tag (gtag.js) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-QSWTPNJ8VP"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-QSWTPNJ8VP');
-          `}
-        </Script>
         <Header />
         <main>{children}</main>
         <Footer />

@@ -69,6 +69,14 @@ export default function Home() {
                 Free 30-day trial
               </div>
             </div>
+            <div className="mt-6 text-center">
+              <Link
+                href="/privacy"
+                className="text-sm text-gray-500 hover:text-primary-600 transition-colors underline"
+              >
+                Privacy Policy
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, CreditCard, Target, TrendingUp, Shield, BarChart3, Sparkles, Calendar, Bell, Globe, ArrowRight, Languages, LineChart } from "lucide-react";
+import { Check, CreditCard, Target, TrendingUp, Shield, BarChart3, Sparkles, Calendar, Bell, Globe, ArrowRight, Languages, LineChart, Building2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -94,6 +94,12 @@ export default function Features() {
           icon: Calendar,
           title: "Google Calendar Integration",
           description: "Never miss a bill payment again. Sync your financial events, bill reminders, and payment due dates directly with your Google Calendar so everything's in one place.",
+          upcoming: true,
+        },
+        {
+          icon: Building2,
+          title: "Bank Integration",
+          description: "Connect your bank accounts directly to MoneyDesk for automatic transaction syncing. No more manual entry—your transactions will appear automatically, categorized and ready to review.",
           upcoming: true,
         },
       ],
