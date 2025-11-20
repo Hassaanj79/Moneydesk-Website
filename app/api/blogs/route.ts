@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import { sanitizeSearchQuery, sanitizeCategory } from "@/lib/security";
 
 // GET all blogs
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const published = searchParams.get("published");
-    const category = searchParams.get("category");
+    const category = sanitizeCategory(searchParams.get("category"));
+    const search = sanitizeSearchQuery(searchParams.get("search"));
 
     let sql = "SELECT * FROM blogs WHERE 1=1";
     const params: any[] = [];
@@ -19,6 +21,15 @@ export async function GET(request: NextRequest) {
     if (category) {
       sql += " AND category = ?";
       params.push(category);
+    }
+
+    // Add search functionality with proper parameterization
+    if (search) {
+      // Use LIKE with parameterized query for safe search
+      // Search in title, excerpt, and content
+      sql += " AND (title LIKE ? OR excerpt LIKE ? OR content LIKE ?)";
+      const searchPattern = `%${search}%`;
+      params.push(searchPattern, searchPattern, searchPattern);
     }
 
     sql += " ORDER BY created_at DESC";
@@ -185,7 +196,15 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Blog ID is required" }, { status: 400 });
     }
 
-    await query("DELETE FROM blogs WHERE id = ?", [id]);
+    // Sanitize blog ID to prevent injection attacks
+    // Only allow alphanumeric, hyphens, and underscores
+    const sanitizedId = String(id).replace(/[^a-zA-Z0-9\-_]/g, '').slice(0, 100);
+    
+    if (!sanitizedId || sanitizedId !== id) {
+      return NextResponse.json({ error: "Invalid blog ID format" }, { status: 400 });
+    }
+
+    await query("DELETE FROM blogs WHERE id = ?", [sanitizedId]);
 
     return NextResponse.json({ success: true, message: "Blog deleted successfully" });
   } catch (error) {

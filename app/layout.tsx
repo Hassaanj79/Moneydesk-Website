@@ -159,6 +159,9 @@ export default function RootLayout({
           }}
         />
         {/* Google tag (gtag.js) - Required for Google Analytics verification - Must be in <head> */}
+        {/* Note: Google Analytics Measurement ID (G-QSWTPNJ8VP) is intentionally visible in the code.
+            This is expected behavior - analytics IDs are meant to be public for tracking purposes.
+            This does not pose a security risk as it only allows tracking of public website usage. */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-QSWTPNJ8VP"

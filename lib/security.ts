@@ -172,3 +172,42 @@ export function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
+/**
+ * Sanitize and validate search query input
+ * Prevents SQL injection and XSS attacks
+ */
+export function sanitizeSearchQuery(searchQuery: string | null | undefined): string {
+  if (!searchQuery || typeof searchQuery !== 'string') {
+    return '';
+  }
+  
+  // Remove potentially dangerous characters and limit length
+  return searchQuery
+    .trim()
+    .replace(/[<>'"\\]/g, '') // Remove dangerous characters
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .slice(0, 100) // Limit to 100 characters
+    .trim();
+}
+
+/**
+ * Sanitize and validate category parameter
+ * Prevents SQL injection and XSS attacks
+ */
+export function sanitizeCategory(category: string | null | undefined): string | null {
+  if (!category || typeof category !== 'string') {
+    return null;
+  }
+  
+  // Only allow alphanumeric, hyphens, underscores, and spaces
+  // Remove any potentially dangerous characters
+  const sanitized = category
+    .trim()
+    .replace(/[^a-zA-Z0-9\s\-_]/g, '') // Only allow safe characters
+    .slice(0, 50) // Limit length
+    .trim();
+  
+  return sanitized.length > 0 ? sanitized : null;
+}
+

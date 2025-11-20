@@ -23,6 +23,7 @@ export default function Blog() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,12 +35,41 @@ export default function Blog() {
     isVisible: false,
   });
 
+  // Sanitize search input on client side
+  const sanitizeSearchInput = (input: string): string => {
+    return input
+      .trim()
+      .replace(/[<>'"\\]/g, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+=/gi, '')
+      .slice(0, 100);
+  };
+
+  useEffect(() => {
+    // Get search query from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get("search");
+    if (searchParam) {
+      const sanitized = sanitizeSearchInput(searchParam);
+      setSearchQuery(sanitized);
+    }
+  }, []);
+
   useEffect(() => {
     // Load blogs from API
     const loadBlogs = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/blogs?published=true");
+        // Build API URL with search parameter if present
+        let apiUrl = "/api/blogs?published=true";
+        if (searchQuery.trim()) {
+          const sanitized = sanitizeSearchInput(searchQuery);
+          if (sanitized) {
+            apiUrl += `&search=${encodeURIComponent(sanitized)}`;
+          }
+        }
+        
+        const response = await fetch(apiUrl);
         const data = await response.json();
         if (data.success && data.blogs) {
           // Sort by date (newest first)
@@ -68,7 +98,7 @@ export default function Blog() {
       }
     };
     loadBlogs();
-  }, []);
+  }, [searchQuery]);
 
   // Get unique categories (memoized to prevent recalculation)
   const categories = useMemo(() => {
@@ -82,6 +112,35 @@ export default function Blog() {
       setFilteredPosts(blogPosts.filter(post => post.category === selectedCategory));
     }
   }, [selectedCategory, blogPosts]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const sanitized = sanitizeSearchInput(searchQuery);
+    if (sanitized) {
+      // Update URL with search parameter
+      const url = new URL(window.location.href);
+      url.searchParams.set("search", sanitized);
+      window.history.pushState({}, "", url.toString());
+      setSearchQuery(sanitized);
+    } else {
+      // Clear search
+      const url = new URL(window.location.href);
+      url.searchParams.delete("search");
+      window.history.pushState({}, "", url.toString());
+      setSearchQuery("");
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Client-side validation: prevent dangerous characters
+    const sanitized = value
+      .replace(/[<>'"\\]/g, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+=/gi, '')
+      .slice(0, 100);
+    setSearchQuery(sanitized);
+  };
 
   const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "info") => {
     setToast({ message, type, isVisible: true });
@@ -181,6 +240,44 @@ export default function Blog() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Expert tips, guides, and stories to help you take control of your finances
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <form onSubmit={handleSearch} className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search articles..."
+              className="w-full px-4 py-3 pl-12 pr-4 rounded-lg border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              maxLength={100}
+            />
+            <button
+              type="submit"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label="Search"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  const url = new URL(window.location.href);
+                  url.searchParams.delete("search");
+                  window.history.pushState({}, "", url.toString());
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </form>
         </div>
 
         {/* Category Filter */}
