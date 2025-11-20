@@ -286,10 +286,12 @@ export default function Contact() {
                 Ready to take control of your finances?
               </h2>
               <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                Start your free 14-day trial and see how MoneyDesk can help you manage your money better. Join thousands of happy users today.
+                Start your free 30-day trial (no credit card required) and see how MoneyDesk can help you manage your money better. Join thousands of happy users today.
               </p>
               <Link
-                href="/pricing"
+                href="https://app.moneydesk.co/signup"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1"
               >
                 Get Started Free

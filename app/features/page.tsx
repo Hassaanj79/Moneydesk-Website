@@ -229,10 +229,12 @@ export default function Features() {
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              See why thousands of people trust MoneyDesk to manage their money. Start your free 14-day trial and unlock powerful financial insights.
+              See why thousands of people trust MoneyDesk to manage their money. Start your free 30-day trial (no credit card required) and unlock powerful financial insights.
             </p>
             <Link
-              href="/pricing"
+              href="https://app.moneydesk.co/signup"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1 hover:scale-105 ${
                 ctaAnimation.isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'
               }`}

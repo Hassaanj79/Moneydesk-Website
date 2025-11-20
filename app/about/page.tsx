@@ -45,7 +45,7 @@ export default function About() {
   ];
 
   const stats = [
-    { icon: Target, value: "14 Days", label: "Free Trial", color: "text-primary-600" },
+    { icon: Target, value: "30 Days", label: "Free Trial", color: "text-primary-600" },
     { icon: TrendingUp, value: "24/7", label: "Always Available", color: "text-success-dark" },
     { icon: Shield, value: "100%", label: "Secure & Private", color: "text-secondary-dark" },
     { icon: Globe, value: "Unlimited", label: "Accounts & Budgets", color: "text-accent-dark" },
@@ -304,7 +304,9 @@ export default function About() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/pricing"
+                href="https://app.moneydesk.co/signup"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center justify-center transform hover:-translate-y-1 hover:scale-105"
               >
                 Get Started Free

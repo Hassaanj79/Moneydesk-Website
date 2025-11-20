@@ -40,7 +40,9 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Link
-                href="/pricing"
+                href="https://app.moneydesk.co/signup"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all hover:shadow-2xl hover:shadow-primary-500/50 inline-flex items-center justify-center transform hover:-translate-y-1"
               >
                 Get Started Free
@@ -60,7 +62,11 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-success" />
-                Free 14-day trial
+                No credit card required
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-success" />
+                Free 30-day trial
               </div>
             </div>
           </div>
@@ -76,7 +82,7 @@ export default function Home() {
         }`}>
           <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {[
-              { icon: Target, value: "14 Days", label: "Free Trial", iconColor: "text-green-300" },
+              { icon: Target, value: "30 Days", label: "Free Trial", iconColor: "text-green-300" },
               { icon: Zap, value: "24/7", label: "Always Available", iconColor: "text-yellow-300" },
               { icon: Shield, value: "100%", label: "Secure & Private", iconColor: "text-green-300" },
             ].map((stat, index) => (
@@ -227,10 +233,12 @@ export default function Home() {
             <p className={`text-xl text-white/90 mb-10 max-w-2xl mx-auto transition-all duration-700 ${
               ctaAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`} style={{ transitionDelay: '400ms' }}>
-              Start your free 14-day trial. Get full access to all features instantly.
+              Start your free 30-day trial. No credit card required. Get full access to all features instantly.
             </p>
             <Link
-              href="/pricing"
+              href="https://app.moneydesk.co/signup"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`group bg-white text-primary-600 px-10 py-5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all duration-500 hover:shadow-2xl inline-flex items-center transform hover:-translate-y-1 hover:scale-105 ${
                 ctaAnimation.isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'
               }`}

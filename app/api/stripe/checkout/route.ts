@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get("origin") || request.headers.get("referer") || "http://localhost:3000";
     const baseUrl = origin.split("/").slice(0, 3).join("/");
 
-    // Create Stripe Checkout Session with 14-day free trial
+    // Create Stripe Checkout Session with 30-day free trial
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       // This ensures we can charge automatically after trial ends
       payment_method_collection: "always",
       subscription_data: {
-        trial_period_days: 14, // 14-day free trial
+        trial_period_days: 30, // 30-day free trial
         trial_settings: {
           end_behavior: {
             missing_payment_method: "cancel", // Cancel if payment method fails
