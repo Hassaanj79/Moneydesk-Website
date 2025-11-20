@@ -138,11 +138,26 @@ export default function RootLayout({
     },
   };
 
+  // Google Tag Manager Container ID
+  const gtmId = 'GTM-KQL75GQ4';
+
   return (
     <html lang="en" className={poppins.variable}>
       <head>
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="FkYxPdfh6VrbteXLzmOAGlQfxSyraREKSfoU0yzBm2o" />
+        {/* Google Tag Manager - Required for GTM verification - Must be in <head> */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${gtmId}');
+            `,
+          }}
+        />
         {/* Google tag (gtag.js) - Required for Google Analytics verification - Must be in <head> */}
         <script
           async
@@ -173,6 +188,15 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.className} antialiased`}>
+        {/* Google Tag Manager (noscript) - Required for GTM verification - Must be immediately after opening <body> */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <InteractiveBackground />
         <Header />
         <main>{children}</main>
